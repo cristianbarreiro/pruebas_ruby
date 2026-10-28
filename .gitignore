@@ -1,0 +1,27 @@
+# Dependencias instaladas localmente
+/.bundle/
+/vendor/bundle/
+**/.bundle/
+**/vendor/bundle/
+
+# Artefactos temporales
+/tmp/
+/coverage/
+*.gem
+*.log.tmp
+
+# Datos generados por los casos de estudio (nunca se versionan los datos del usuario)
+case_studies/*/storage/
+case_studies/*/reports/
+
+# Secretos y configuración local
+.env
+.env.*
+!.env.example
+
+# Editores y sistema operativo
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

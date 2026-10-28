@@ -1,0 +1,67 @@
+# Configuración de RuboCop para ruby-practical-lab.
+# Regla general: se usan los valores por defecto. Cada excepción está
+# justificada y limitada al alcance mínimo necesario.
+
+plugins:
+  - rubocop-minitest
+  - rubocop-rake
+
+AllCops:
+  TargetRubyVersion: 3.4
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - "**/vendor/**/*"
+    - "**/tmp/**/*"
+    - "**/storage/**/*"
+
+# Comillas dobles en todo el repositorio: permiten interpolar sin cambiar de estilo.
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
+
+# Las clases se documentan con el comentario de cabecera del archivo y con los
+# README de cada módulo; exigir un comentario por clase genera ruido en las
+# clases didácticas de pocas líneas.
+Style/Documentation:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 120
+
+# Los métodos de demostración imprimen varias líneas seguidas para enseñar un
+# concepto; se cuentan literales multilínea como una sola línea.
+Metrics/MethodLength:
+  Max: 15
+  CountAsOne: ["array", "hash", "heredoc", "method_call"]
+  Exclude:
+    - "examples/**/*"
+
+Metrics/AbcSize:
+  Max: 20
+  Exclude:
+    - "examples/**/*"
+
+# Las pruebas y la definición de tareas se organizan en bloques largos por naturaleza.
+Metrics/BlockLength:
+  Exclude:
+    - "Rakefile"
+    - "**/Rakefile"
+    - "**/test/**/*"
+    - "**/*.gemspec"
+
+Metrics/ClassLength:
+  Max: 150
+  Exclude:
+    - "**/test/**/*"
+
+# El ejecutable sigue la convención de nombres de comandos de terminal (guiones).
+Naming/FileName:
+  Exclude:
+    - "bin/ruby-lab"
+
+# Las pruebas de dominio suelen verificar varias propiedades del mismo resultado.
+Minitest/MultipleAssertions:
+  Max: 6

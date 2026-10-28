@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Ejecutable del laboratorio. Uso: bin/ruby-lab help
+require_relative "../lib/ruby_lab"
+
+exit RubyLab::CLI.new.call(ARGV)
