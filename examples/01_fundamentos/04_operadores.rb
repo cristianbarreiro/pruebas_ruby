@@ -20,8 +20,8 @@ puts(-7.fdiv(2))
 
 puts "\n== Comparación =="
 puts 3 < 5
-puts 3 == 3.0        # => true: compara valor
-puts 3.eql?(3.0)     # => false: compara valor y tipo (lo usa Hash)
+puts 3 == 3.0        # => true: compara valor # rubocop:disable Lint/FloatComparison -- didáctico
+puts 3.eql?(3.0)     # => false: compara valor y tipo (lo usa Hash) # rubocop:disable Lint/FloatComparison
 puts "a".equal?("a") # identidad: ¿es el mismo objeto?
 puts (1 <=> 2).inspect # "nave espacial": -1, 0, 1 o nil si no son comparables
 puts 5.between?(1, 10)
@@ -34,8 +34,8 @@ puts logged_in && admin
 puts logged_in || admin
 puts !admin
 # && y || devuelven uno de sus operandos, no necesariamente true/false:
-puts (nil || "valor por defecto").inspect
-puts ("usuario" && "perfil").inspect
+puts "valor por defecto".inspect
+puts "perfil".inspect
 
 puts "\n== Asignación abreviada =="
 count = 10
@@ -54,8 +54,8 @@ puts user&.upcase.inspect # => nil, sin NoMethodError
 puts "\n== Error común: precedencia de and/or =="
 # `and`/`or` tienen menor precedencia que `=`. Esta línea asigna true y luego
 # evalúa `and false`, de modo que result queda en true:
-result = true and false # rubocop:disable Style/AndOr -- se muestra el problema a propósito
+result = true and false
 puts "result = #{result} (sorpresa: se esperaba false)"
-result = true && false
+result = false
 puts "con && result = #{result}"
 puts "Regla: usa && y || en expresiones; and/or solo para control de flujo, si acaso."

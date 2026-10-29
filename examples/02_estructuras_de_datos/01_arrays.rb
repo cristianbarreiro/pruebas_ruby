@@ -9,7 +9,7 @@
 
 puts "== Creación =="
 numbers = [5, 3, 8, 1]
-words = %w[rojo verde azul]           # array de strings sin comillas ni comas
+words = %w[rojo verde azul] # array de strings sin comillas ni comas
 matrix = Array.new(2) { Array.new(3, 0) } # el bloque crea un array nuevo por fila
 puts numbers.inspect, words.inspect, matrix.inspect
 
@@ -20,7 +20,7 @@ puts numbers[10].inspect              # fuera de rango -> nil, no error
 puts numbers.fetch(1)
 puts numbers.fetch(10, "sin valor")   # fetch permite un valor por defecto
 puts numbers.first(2).inspect
-puts numbers.dig(0).inspect
+puts numbers[0].inspect
 
 puts "\n== Agregar y quitar =="
 stack = []
@@ -48,7 +48,8 @@ puts numbers.include?(8)
 puts "\n== Desestructuración =="
 first, *rest = numbers
 puts "first=#{first} rest=#{rest.inspect}"
-latitude, longitude = [-33.45, -70.66]
+latitude = -33.45
+longitude = -70.66
 puts "lat=#{latitude} lon=#{longitude}"
 
 puts "\n== Error común: Array.new(n, objeto) comparte el mismo objeto =="

@@ -15,7 +15,8 @@
 #   métodos sin !   devuelven un objeto nuevo en lugar de modificar el receptor
 
 Point = Data.define(:x, :y) do
-  def translate(dx, dy) = with(x: x + dx, y: y + dy) # devuelve un Point nuevo
+  # devuelve un Point nuevo
+  def translate(delta_x, delta_y) = with(x: x + delta_x, y: y + delta_y)
 end
 
 # Impura: modifica el array que recibe.

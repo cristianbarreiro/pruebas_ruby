@@ -11,7 +11,7 @@
 # * case/in (pattern matching, Ruby 3+) desestructura hashes y arrays.
 
 def classify_temperature(celsius)
-  if celsius < 0
+  if celsius.negative?
     "helada"
   elsif celsius < 18
     "frío"
@@ -86,4 +86,4 @@ active = true
 puts active ? "Activo" : "Inactivo"
 
 puts "\n== Error común: el orden de los when importa =="
-puts "describe('123') devuelve #{describe('123').inspect}: String coincide antes que la regex."
+puts "describe('123') devuelve #{describe("123").inspect}: String coincide antes que la regex."

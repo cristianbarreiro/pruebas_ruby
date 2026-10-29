@@ -43,7 +43,7 @@ puts ana.summary
 puts luis.summary # cada objeto tiene su propio @balance
 
 puts "\n== Variables de instancia de clase (preferibles a @@) =="
-class Counter
+class Counter # rubocop:disable Style/OneClassPerFile -- ejemplo didáctico: varias clases en un archivo
   @instances = 0 # pertenece al objeto Counter (la clase), no a sus instancias
 
   class << self
@@ -68,7 +68,7 @@ puts "TAX_RATE = #{TAX_RATE}"
 puts "COUNTRIES congelado? #{COUNTRIES.frozen?}"
 
 puts "\n== Error común: @@variables compartidas con subclases =="
-# rubocop:disable Style/ClassVars -- se muestra a propósito el problema que señala este cop
+# rubocop:disable Style/ClassVars, Style/OneClassPerFile -- se muestra a propósito el problema
 class Base
   @@registry = []
 
@@ -81,7 +81,7 @@ class Child < Base; end
 Child.register(:child_item)
 # La subclase modificó el MISMO array que la clase padre:
 puts "Base.registry = #{Base.registry.inspect}"
-# rubocop:enable Style/ClassVars
+# rubocop:enable Style/ClassVars, Style/OneClassPerFile
 puts "Solución: usa variables de instancia de clase (@instances en Counter)."
 
 puts "\n== Error común: variables globales =="

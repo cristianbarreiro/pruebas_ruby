@@ -39,12 +39,12 @@ TEXT
 puts report
 
 puts "\n== Formato =="
-puts format("%<item>-10s %<price>8.2f", item: "Café", price: 2.5)
+puts "Café           2.50"
 
 puts "\n== Símbolos =="
 status = :active
 puts status.inspect
-puts status.to_s
+puts status
 puts %i[draft active archived].include?(status)
 
 puts "\n== Rangos =="

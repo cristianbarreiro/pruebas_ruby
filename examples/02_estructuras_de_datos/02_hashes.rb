@@ -36,7 +36,7 @@ prices.each { |item, price| puts "#{item}: $#{price}" }
 puts prices.select { |_item, price| price > 2000 }.inspect
 puts prices.transform_values { |price| price * 2 }.inspect
 puts prices.min_by { |_item, price| price }.inspect
-puts prices.sum { |_item, price| price }
+puts(prices.sum { |_item, price| price })
 puts prices.sort_by { |_item, price| -price }.to_h.inspect
 puts prices.to_a.inspect
 
@@ -52,7 +52,7 @@ groups[:impares] << 1
 puts groups.inspect
 
 puts "\n== Error común: Hash.new([]) comparte el mismo array =="
-broken = Hash.new([])
-broken[:a] << 1                              # modifica el valor por defecto, no crea la clave
+broken = Hash.new([]) # rubocop:disable Lint/SharedMutableDefault -- se muestra el error a propósito
+broken[:a] << 1 # modifica el valor por defecto, no crea la clave
 puts "broken = #{broken.inspect}, broken[:z] = #{broken[:z].inspect}"
 puts "Usa Hash.new { |h, k| h[k] = [] } o group_by."

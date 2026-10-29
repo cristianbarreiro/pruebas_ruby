@@ -22,7 +22,7 @@ puts shout.call("hola")
 puts square.lambda?, shout.lambda?
 
 puts "\n== Aridad =="
-puts shout.call("uno", "dos")             # el argumento extra se ignora
+puts shout.call("uno", "dos") # el argumento extra se ignora
 begin
   square.call(1, 2)
 rescue ArgumentError => e
@@ -31,7 +31,7 @@ end
 
 puts "\n== return =="
 def run_lambda
-  inner = -> { return :desde_lambda }
+  inner = -> { :desde_lambda }
   inner.call
   :fin_del_metodo # se alcanza: return solo salió de la lambda
 end
@@ -46,7 +46,7 @@ puts run_proc.inspect
 
 puts "\n== Pasar lambdas como estrategia =="
 formatters = {
-  plain: ->(amount) { amount.to_s },
+  plain: lambda(&:to_s),
   money: ->(amount) { format("$%.2f", amount) },
   percent: ->(amount) { "#{(amount * 100).round}%" }
 }
@@ -59,7 +59,7 @@ puts [1, 4, 9].map(&Math.method(:sqrt)).inspect # convierte un método en bloque
 puts "\n== Composición y currying =="
 add_tax = ->(price) { price * 1.19 }
 round_up = lambda(&:ceil)
-final_price = add_tax >> round_up              # primero add_tax, luego round_up
+final_price = add_tax >> round_up # primero add_tax, luego round_up
 puts final_price.call(1000)
 multiply = ->(a, b) { a * b }
 triple = multiply.curry[3]

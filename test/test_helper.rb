@@ -27,7 +27,7 @@ module TestSupport
   end
 
   # Ejecuta un script Ruby en un proceso hijo y devuelve [stdout, stderr, status].
-  def run_ruby(*args, stdin: "", chdir: ROOT, env: {})
-    Open3.capture3(env, RbConfig.ruby, *args, stdin_data: stdin, chdir: chdir)
+  def run_ruby(*, stdin: "", chdir: ROOT, env: {})
+    Open3.capture3(env, RbConfig.ruby, *, stdin_data: stdin, chdir: chdir)
   end
 end

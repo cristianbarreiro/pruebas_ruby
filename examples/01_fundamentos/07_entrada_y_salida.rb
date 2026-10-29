@@ -53,6 +53,6 @@ puts "Respuesta leída: #{age.inspect}"
 
 puts "\n== Error común: olvidar chomp =="
 raw = StringIO.new("sí\n").gets
-puts "Sin chomp: #{raw.inspect} == 'sí' -> #{raw == 'sí'}"
-puts "Con chomp: #{raw.chomp.inspect} == 'sí' -> #{raw.chomp == 'sí'}"
+puts "Sin chomp: #{raw.inspect} == 'sí' -> #{raw == "sí"}"
+puts "Con chomp: #{raw.chomp.inspect} == 'sí' -> #{raw.chomp == "sí"}"
 puts "Y comprueba nil: en EOF `gets.chomp` lanza NoMethodError."

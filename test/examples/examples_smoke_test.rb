@@ -8,7 +8,7 @@ require "test_helper"
 # Se genera un test por archivo para que un fallo indique exactamente qué
 # ejemplo se rompió.
 class ExamplesSmokeTest < Minitest::Test
-  EXAMPLE_FILES = Dir.glob(File.join(TestSupport::ROOT, "examples", "**", "*.rb")).sort.freeze
+  EXAMPLE_FILES = Dir.glob(File.join(TestSupport::ROOT, "examples", "**", "*.rb")).freeze
 
   def test_examples_are_discovered
     assert_operator EXAMPLE_FILES.size, :>=, 14, "Se esperaba al menos un ejemplo por módulo"
@@ -16,7 +16,7 @@ class ExamplesSmokeTest < Minitest::Test
 
   EXAMPLE_FILES.each do |path|
     relative = path.delete_prefix("#{TestSupport::ROOT}/")
-    test_name = "test_runs_#{relative.gsub(/[^a-z0-9]+/i, '_')}"
+    test_name = "test_runs_#{relative.gsub(/[^a-z0-9]+/i, "_")}"
 
     define_method(test_name) do
       stdout, stderr, status = TestSupport.run_ruby(path)

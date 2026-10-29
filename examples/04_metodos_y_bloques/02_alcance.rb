@@ -26,8 +26,8 @@ puts "fuera: defined?(created_inside) = #{defined?(created_inside).inspect}"
 
 puts "\n== Variables locales del bloque (;) para evitar modificar las externas =="
 value = "externo"
-[1, 2].each do |n; value| # `value` es local al bloque y no toca la externa
-  value = n * 100
+[1, 2].each do |n; _value| # `value` es local al bloque y no toca la externa
+  n * 100
 end
 puts "value sigue siendo #{value.inspect}"
 

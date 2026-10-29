@@ -15,6 +15,11 @@ AllCops:
     - "**/tmp/**/*"
     - "**/storage/**/*"
 
+# En Windows con git autocrlf, los archivos tienen CRLF al checkout; no aporta
+# valor pedagógico forzar LF y genera ruido en cada ejecución local.
+Layout/EndOfLine:
+  Enabled: false
+
 # Comillas dobles en todo el repositorio: permiten interpolar sin cambiar de estilo.
 Style/StringLiterals:
   EnforcedStyle: double_quotes

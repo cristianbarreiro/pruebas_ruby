@@ -41,7 +41,7 @@ powers_of_two = Enumerator.produce(1) { |n| n * 2 }
 puts powers_of_two.take(8).inspect
 
 puts "\n== lazy sobre líneas (simulando un archivo grande) =="
-lines = Enumerator.new { |y| 10_000.times { |i| y << "linea #{i} #{i % 500 == 0 ? 'ERROR' : 'ok'}" } }
+lines = Enumerator.new { |y| 10_000.times { |i| y << "linea #{i} #{(i % 500).zero? ? "ERROR" : "ok"}" } }
 first_errors = lines.lazy.grep(/ERROR/).first(2)
 puts first_errors.inspect
 

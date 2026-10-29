@@ -9,7 +9,7 @@
 # Desde Ruby 3.2 Set se carga automáticamente; en Ruby 4.0 forma parte del núcleo.
 
 puts "== Creación =="
-tags = Set.new(%w[ruby cli ruby testing])
+tags = Set.new(%w[ruby cli testing])
 puts tags.inspect                    # el duplicado desaparece
 puts tags.size
 tags << "ruby"                       # añadir un existente no cambia nada
@@ -30,7 +30,7 @@ puts "\n== Caso práctico: permisos =="
 required = Set[:read, :write]
 granted = Set[:read]
 missing = required - granted
-puts missing.empty? ? "Acceso concedido" : "Faltan permisos: #{missing.to_a.join(', ')}"
+puts missing.empty? ? "Acceso concedido" : "Faltan permisos: #{missing.to_a.join(", ")}"
 
 puts "\n== Error común: usar Array#include? en bucles grandes =="
 blocked_ids = (1..10_000).to_a

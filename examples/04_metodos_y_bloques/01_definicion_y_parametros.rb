@@ -40,7 +40,7 @@ end
 
 # Devolver varios valores: en realidad se devuelve un Array que se desestructura.
 def min_and_max(values)
-  [values.min, values.max]
+  values.minmax
 end
 
 # Método de una sola expresión ("endless method", Ruby 3.0+).
@@ -54,7 +54,7 @@ puts greet("Ana", "Buenos días")
 puts "\n== Splat =="
 puts average(4, 8, 9)
 puts average
-puts average(*[1, 2, 3]) # el * en la llamada expande un array en argumentos
+puts average(1, 2, 3) # el * en la llamada expande un array en argumentos
 
 puts "\n== Nombrados =="
 puts create_user(name: "Eva", email: "eva@example.com").inspect

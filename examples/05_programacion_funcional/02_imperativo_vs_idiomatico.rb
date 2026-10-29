@@ -22,7 +22,7 @@ EMPLOYEES = [
   Employee.new(name: "leo", department: "ventas", salary: 2100)
 ].freeze
 
-# rubocop:disable Style/MapIntoArray -- versión imperativa mostrada a propósito para comparar
+# rubocop:disable-next Style/MapIntoArray -- versión imperativa mostrada a propósito para comparar
 def imperative(employees)
   selected = []
   employees.each do |employee|
@@ -33,7 +33,6 @@ def imperative(employees)
   sorted.each { |employee| names << employee.name.upcase }
   names
 end
-# rubocop:enable Style/MapIntoArray
 
 def idiomatic(employees)
   employees

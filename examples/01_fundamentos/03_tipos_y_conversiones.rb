@@ -33,8 +33,8 @@ puts :ok.to_s.inspect
 
 puts "\n== Conversiones estrictas (Kernel#Integer, Float) =="
 puts Integer("42").inspect
-puts Integer("1A", 16).inspect   # => 26, con base explícita
-puts Integer("0b101").inspect     # => 5, reconoce prefijos 0b, 0o, 0x
+puts Integer("1A", 16).inspect # => 26, con base explícita
+puts Integer("0b101").inspect # => 5, reconoce prefijos 0b, 0o, 0x
 puts Integer("abc", exception: false).inspect # => nil en lugar de excepción
 begin
   Integer("42abc")
@@ -43,8 +43,8 @@ rescue ArgumentError => e
 end
 
 puts "\n== Símbolos frente a strings =="
-puts :status.equal?(:status)      # => true: un símbolo es único en memoria
-puts "status".to_sym.inspect
+puts :status.equal?(:status) # => true: un símbolo es único en memoria
+puts :status.inspect
 puts %w[a b].map(&:upcase).inspect # &:upcase convierte el símbolo en un bloque
 
 puts "\n== Comprobar tipos =="

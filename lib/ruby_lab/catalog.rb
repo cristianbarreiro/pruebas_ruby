@@ -54,7 +54,7 @@ module RubyLab
     end
 
     def example_entries(module_name)
-      Dir.glob(File.join(examples_dir, module_name, "*.rb")).sort.map do |path|
+      Dir.glob(File.join(examples_dir, module_name, "*.rb")).map do |path|
         Entry.new(
           id: "#{module_name[0, 2]}/#{File.basename(path)[0, 2]}",
           group: module_name,
@@ -65,9 +65,9 @@ module RubyLab
     end
 
     def exercise_entries(level)
-      Dir.glob(File.join(@root, "exercises", level, "*.md")).sort.map do |path|
+      Dir.glob(File.join(@root, "exercises", level, "*.md")).map do |path|
         Entry.new(
-          id: "#{level}/#{File.basename(path, '.md')}",
+          id: "#{level}/#{File.basename(path, ".md")}",
           group: level,
           title: read_title(path, MARKDOWN_TITLE),
           path: relative(path)
@@ -90,7 +90,7 @@ module RubyLab
     def validate_level(level)
       return level if LEVELS.include?(level)
 
-      raise ArgumentError, "Nivel desconocido: #{level}. Usa uno de: #{LEVELS.join(', ')}"
+      raise ArgumentError, "Nivel desconocido: #{level}. Usa uno de: #{LEVELS.join(", ")}"
     end
   end
 end

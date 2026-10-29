@@ -22,11 +22,10 @@ attempts += 1 until attempts >= 3
 puts "attempts = #{attempts}"
 
 puts "\n== for (existe, pero se usa poco) =="
-# rubocop:disable Style/For -- se muestra for para compararlo con each
+# rubocop:disable-next Style/For -- se muestra for para compararlo con each
 for fruit in %w[pera uva]
   puts fruit
 end
-# rubocop:enable Style/For
 puts "La variable del for sigue existiendo fuera del bucle: fruit = #{fruit.inspect}"
 
 puts "\n== Iteradores =="
@@ -56,7 +55,7 @@ puts "Primer número > 10: #{first_big}"
 
 puts "\n== Error común: bucles con índice manual =="
 names = %w[Ana Luis Eva]
-puts "Idiomático: #{names.map(&:upcase).join(', ')}"
+puts "Idiomático: #{names.map(&:upcase).join(", ")}"
 puts "Si necesitas el índice, usa each_with_index o each.with_index(1):"
 names.each.with_index(1) { |name, position| puts "#{position}. #{name}" }
 
