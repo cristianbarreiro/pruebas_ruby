@@ -42,7 +42,7 @@ def busqueda_binaria(arr, objetivo)
   der = arr.length - 1
 
   while izq <= der
-    medio = izq + (der - izq) / 2  # Evita overflow en otros lenguajes (buena práctica)
+    medio = izq + ((der - izq) / 2) # Evita overflow en otros lenguajes (buena práctica)
     valor_medio = arr[medio]
 
     if valor_medio == objetivo
@@ -62,10 +62,10 @@ def busqueda_binaria_recursiva(arr, objetivo, izq = 0, der = nil)
   der = arr.length - 1 if der.nil?
   return nil if izq > der
 
-  medio = izq + (der - izq) / 2
+  medio = izq + ((der - izq) / 2)
 
   case objetivo <=> arr[medio]
-  when 0  then medio                                                  # Encontrado
+  when 0  then medio # Encontrado
   when 1  then busqueda_binaria_recursiva(arr, objetivo, medio + 1, der)  # Buscar en mitad derecha
   when -1 then busqueda_binaria_recursiva(arr, objetivo, izq, medio - 1)  # Buscar en mitad izquierda
   end
@@ -79,7 +79,7 @@ end
 # Útil solo para enseñanza o arrays muy pequeños (< 20 elementos).
 
 def bubble_sort(arr)
-  resultado = arr.dup  # No modificar el array original
+  resultado = arr.dup # No modificar el array original
   largo = resultado.length
 
   (largo - 1).times do |idx|
@@ -239,7 +239,7 @@ def ejecutar_pruebas
   errores = []
 
   # --- Helper para verificar resultados ---
-  verificar = ->(nombre, actual, esperado) {
+  verificar = lambda { |nombre, actual, esperado|
     if actual == esperado
       puts "  ✓ #{nombre}"
     else
@@ -331,7 +331,7 @@ def ejecutar_pruebas
   end
 
   # --- Resumen ---
-  puts "\n#{'=' * 40}"
+  puts "\n#{"=" * 40}"
   if errores.empty?
     puts "✅ Todas las pruebas pasaron."
   else

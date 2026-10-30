@@ -39,11 +39,11 @@ end
 class Cat < Animal
   # Hereda initialize, speak, to_s de Animal
   def initialize(name)
-    super(name, "Miau")  # Llama al initialize de Animal con argumentos específicos
+    super(name, "Miau") # Llama al initialize de Animal con argumentos específicos
   end
 
   def purr
-    "#{@name} ronronea..."  # Método propio de Cat
+    "#{@name} ronronea..." # Método propio de Cat
   end
 end
 
@@ -70,7 +70,7 @@ puts "\nCadena de herencia de Cat:"
 puts Cat.ancestors.inspect
 # => [Cat, Animal, Object, Kernel, BasicObject]
 
-puts "¿Cat es subclase de Animal? #{Cat < Animal}"  # => true
+puts "¿Cat es subclase de Animal? #{Cat < Animal}" # => true
 
 # ─────────────────────────────────────────────────────────────────────
 # 2. Sobreescritura de métodos y super
@@ -97,12 +97,12 @@ class Circle < Shape
   attr_reader :radius
 
   def initialize(radius, color = "rojo")
-    super(color)          # Llama a Shape#initialize con solo el color
+    super(color) # Llama a Shape#initialize con solo el color
     @radius = radius
   end
 
   def area
-    Math::PI * @radius**2
+    Math::PI * (@radius**2)
   end
 
   # super llama al método del padre y le agregamos información
@@ -132,7 +132,7 @@ end
 class Square < Rectangle
   # Herencia multinivel: Square < Rectangle < Shape
   def initialize(side, color = "verde")
-    super(side, side, color)  # Un cuadrado es un rectángulo con lados iguales
+    super(side, side, color) # Un cuadrado es un rectángulo con lados iguales
   end
 
   def describe
@@ -145,7 +145,7 @@ rect = Rectangle.new(4, 6)
 square = Square.new(3)
 
 puts circle.describe
-puts "  Área: #{"%.2f" % circle.area}"
+puts "  Área: #{format("%.2f", circle.area)}"
 puts rect.describe
 puts "  Área: #{rect.area}"
 puts square.describe
@@ -164,11 +164,11 @@ puts "Cálculo de áreas (polimorfismo):"
 shapes.each do |shape|
   # No preguntamos "¿eres círculo? ¿eres rectángulo?"
   # Simplemente enviamos el mensaje #area
-  puts "  #{shape.describe} → Área: #{"%.2f" % shape.area}"
+  puts "  #{shape.describe} → Área: #{format("%.2f", shape.area)}"
 end
 
 total_area = shapes.sum(&:area)
-puts "  Área total: #{"%.2f" % total_area}"
+puts "  Área total: #{format("%.2f", total_area)}"
 
 # ─────────────────────────────────────────────────────────────────────
 # 4. Duck typing: la esencia del polimorfismo en Ruby
@@ -220,7 +220,7 @@ end
 
 puts "\nVerificación con respond_to?:"
 puts safe_render(PdfReport.new)
-puts safe_render("soy un string")  # String no tiene #render
+puts safe_render("soy un string") # String no tiene #render
 
 # ─────────────────────────────────────────────────────────────────────
 # 5. ⚠️ Problema de herencia mal usada
@@ -233,7 +233,7 @@ puts "\n--- 5. Herencia mal usada (antipatrón) ---"
 class BadStack < Array
   # Heredar de Array expone métodos que no tienen sentido para un Stack:
   # insert, sort, reverse, [], etc.
-  alias_method :peek, :last
+  alias peek last
 end
 
 bad_stack = BadStack.new
@@ -242,7 +242,7 @@ bad_stack.push(2)
 puts "BadStack peek: #{bad_stack.peek}"
 
 # ⚠️ Esto no debería ser posible en un Stack, pero Array lo permite:
-bad_stack.insert(0, "trampa")
+bad_stack.insert(0, 99)
 bad_stack.sort!
 puts "BadStack roto: #{bad_stack.inspect}"
 puts "  → Un Stack no debería permitir insert ni sort"
@@ -257,7 +257,7 @@ puts "\n--- 6. Composición sobre herencia ---"
 
 class GoodStack
   def initialize
-    @elements = []  # Composición: usa Array internamente
+    @elements = [] # Composición: usa Array internamente
   end
 
   def push(element)
@@ -292,10 +292,10 @@ end
 
 stack = GoodStack.new
 stack.push(1).push(2).push(3)
-puts stack                   # => Stack(1 → 2 → 3)
+puts stack # => Stack(1 → 2 → 3)
 puts "peek: #{stack.peek}"  # => 3
 puts "pop: #{stack.pop}"    # => 3
-puts stack                   # => Stack(1 → 2)
+puts stack # => Stack(1 → 2)
 
 # stack.sort!   # ⛔ NoMethodError — correcto, un Stack no se ordena
 # stack[0]      # ⛔ NoMethodError — correcto, no hay acceso por índice
@@ -327,7 +327,7 @@ end
 # NotificationService USA (composición) un sender, no HEREDA de él
 class NotificationService
   def initialize(sender)
-    @sender = sender  # Composición: inyectamos la dependencia
+    @sender = sender # Composición: inyectamos la dependencia
   end
 
   def notify(recipient, message)

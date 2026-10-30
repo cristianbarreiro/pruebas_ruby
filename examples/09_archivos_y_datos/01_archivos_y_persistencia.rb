@@ -81,7 +81,7 @@ def demo_pathname(base_dir)
 
   # Listar archivos en un directorio
   puts "Contenido del directorio base:"
-  ruta.children.each { |hijo| puts "  #{hijo.basename} (#{hijo.directory? ? 'dir' : 'archivo'})" }
+  ruta.children.each { |hijo| puts "  #{hijo.basename} (#{hijo.directory? ? "dir" : "archivo"})" }
   puts
 end
 
@@ -103,7 +103,7 @@ def demo_csv(base_dir)
   ]
 
   CSV.open(archivo_csv, "w", headers: true) do |csv|
-    csv << ["nombre", "precio", "stock"]
+    csv << %w[nombre precio stock]
     productos.each do |prod|
       csv << [prod[:nombre], prod[:precio], prod[:stock]]
     end
@@ -116,7 +116,7 @@ def demo_csv(base_dir)
     nombre = row["nombre"]
     precio = row["precio"].to_f
     stock  = row["stock"].to_i
-    puts "  #{nombre}: $#{'%.2f' % precio} (#{stock} unidades)"
+    puts "  #{nombre}: $#{format("%.2f", precio)} (#{stock} unidades)"
   end
 
   # Lectura completa como tabla
@@ -125,11 +125,11 @@ def demo_csv(base_dir)
 
   # Filtrar productos caros
   caros = tabla.select { |row| row["precio"].to_f > 100 }
-  puts "Productos con precio > $100: #{caros.map { |row| row['nombre'] }.join(', ')}"
+  puts "Productos con precio > $100: #{caros.map { |row| row["nombre"] }.join(", ")}"
 
   # Generar CSV como string (útil para APIs)
   csv_string = CSV.generate do |csv|
-    csv << ["id", "valor"]
+    csv << %w[id valor]
     3.times { |idx| csv << [idx + 1, rand(100)] }
   end
   puts "CSV generado como string:\n#{csv_string}"
@@ -155,7 +155,7 @@ def demo_json(base_dir)
       puerto: 5432,
       nombre: "mi_app_production"
     },
-    features: ["auth", "cache", "logging"],
+    features: %w[auth cache logging],
     limites: {
       max_conexiones: 100,
       timeout_segundos: 30.5
@@ -170,8 +170,8 @@ def demo_json(base_dir)
   # Lectura y deserialización
   datos = JSON.parse(File.read(archivo_json))
   puts "\nDatos parseados (clase): #{datos.class}"
-  puts "Host BD: #{datos.dig('base_de_datos', 'host')}"
-  puts "Features: #{datos['features'].join(', ')}"
+  puts "Host BD: #{datos.dig("base_de_datos", "host")}"
+  puts "Features: #{datos["features"].join(", ")}"
 
   # ⚠️ Cuidado: JSON.parse retorna strings como claves, no símbolos
   puts "Claves son strings: #{datos.keys.first.class}" # => String
@@ -188,15 +188,15 @@ def demo_json(base_dir)
     # Date no se serializa directamente de forma útil sin conversión
     json_persona = JSON.generate(persona.transform_values(&:to_s))
     puts "\nPersona como JSON: #{json_persona}"
-  rescue TypeError => err
-    puts "Error de serialización: #{err.message}"
+  rescue TypeError => e
+    puts "Error de serialización: #{e.message}"
   end
 
   # JSON inválido — manejo de errores
   begin
     JSON.parse("{ esto no es json válido }")
-  rescue JSON::ParserError => err
-    puts "\n⚠️  JSON inválido capturado: #{err.message[0..60]}..."
+  rescue JSON::ParserError => e
+    puts "\n⚠️  JSON inválido capturado: #{e.message[0..60]}..."
   end
   puts
 end
@@ -212,14 +212,14 @@ def demo_fechas_y_horas
   ahora = Time.now
   puts "Time.now:       #{ahora}"
   puts "Época Unix:     #{ahora.to_i}"
-  puts "Formato ISO:    #{ahora.strftime('%Y-%m-%dT%H:%M:%S%z')}"
-  puts "Formato humano: #{ahora.strftime('%d/%m/%Y %H:%M')}"
+  puts "Formato ISO:    #{ahora.strftime("%Y-%m-%dT%H:%M:%S%z")}"
+  puts "Formato humano: #{ahora.strftime("%d/%m/%Y %H:%M")}"
 
   # Date — solo fecha, sin hora ni zona
   hoy = Date.today
   puts "\nDate.today:    #{hoy}"
   puts "Año: #{hoy.year}, Mes: #{hoy.month}, Día: #{hoy.day}"
-  puts "Día de la semana: #{hoy.strftime('%A')}"
+  puts "Día de la semana: #{hoy.strftime("%A")}"
   puts "¿Fin de semana?: #{hoy.saturday? || hoy.sunday?}"
 
   # Aritmética de fechas
@@ -253,8 +253,8 @@ def demo_fechas_y_horas
     ambigua = Date.parse("03/04/2025")
     puts "\n⚠️  Fecha ambigua '03/04/2025' se interpretó como: #{ambigua}"
     puts "   Consejo: usa Date.strptime con formato explícito para evitar sorpresas."
-  rescue Date::Error => err
-    puts "Error al parsear fecha: #{err.message}"
+  rescue Date::Error => e
+    puts "Error al parsear fecha: #{e.message}"
   end
 
   # Rangos de fechas
@@ -273,7 +273,7 @@ def demo_variables_entorno
   puts "=== Variables de entorno ==="
 
   # Acceso directo (retorna nil si no existe)
-  path = ENV["PATH"]
+  path = ENV.fetch("PATH", nil)
   puts "PATH (primeros 80 chars): #{path&.slice(0, 80)}..."
 
   # Acceso seguro con valor por defecto
@@ -283,14 +283,14 @@ def demo_variables_entorno
   # ⚠️ ENV.fetch sin default lanza KeyError si la variable no existe
   begin
     ENV.fetch("VARIABLE_QUE_NO_EXISTE_XYZ_123")
-  rescue KeyError => err
-    puts "⚠️  Variable no encontrada: #{err.message}"
+  rescue KeyError => e
+    puts "⚠️  Variable no encontrada: #{e.message}"
   end
 
   # Listar variables de entorno (primeras 5)
   puts "\nPrimeras 5 variables de entorno:"
   ENV.first(5).each do |clave, valor|
-    puts "  #{clave} = #{valor&.slice(0, 50)}#{valor && valor.length > 50 ? '...' : ''}"
+    puts "  #{clave} = #{valor&.slice(0, 50)}#{"..." if valor && valor.length > 50}"
   end
 
   # Patrón común: configuración basada en entorno
@@ -404,15 +404,15 @@ def demo_manejo_errores(base_dir)
   # 1. Archivo que no existe
   begin
     File.read(File.join(base_dir, "no_existe.txt"))
-  rescue Errno::ENOENT => err
-    puts "✓ Archivo no encontrado: #{err.message}"
+  rescue Errno::ENOENT => e
+    puts "✓ Archivo no encontrado: #{e.message}"
   end
 
   # 2. Directorio que no existe
   begin
     File.write("/ruta/que/no/existe/archivo.txt", "datos")
-  rescue Errno::ENOENT => err
-    puts "✓ Directorio no encontrado: #{err.message}"
+  rescue Errno::ENOENT => e
+    puts "✓ Directorio no encontrado: #{e.message}"
   end
 
   # 3. Permisos insuficientes (simulado con ejemplo)
@@ -423,8 +423,8 @@ def demo_manejo_errores(base_dir)
   File.write(archivo_corrupto, '{"nombre": "test", precio: }')
   begin
     JSON.parse(File.read(archivo_corrupto))
-  rescue JSON::ParserError => err
-    puts "✓ JSON corrupto: #{err.message[0..60]}..."
+  rescue JSON::ParserError => e
+    puts "✓ JSON corrupto: #{e.message[0..60]}..."
   end
 
   # 5. CSV con formato inconsistente

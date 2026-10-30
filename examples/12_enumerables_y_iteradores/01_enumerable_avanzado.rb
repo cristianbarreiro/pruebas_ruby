@@ -29,10 +29,14 @@ class Playlist
   end
 
   # ⭐ Este es el único método que Enumerable REQUIERE
-  def each(&block)
+  def each(&)
     return to_enum(:each) unless block_given?
 
-    @songs.each(&block)
+    @songs.each(&)
+  end
+
+  def size
+    @songs.size
   end
 
   # Comparable requiere <=> para obtener <, <=, ==, >=, >, between?
@@ -48,7 +52,7 @@ class Playlist
     total = total_duration
     minutes = total / 60
     seconds = total % 60
-    format("%d:%02d", minutes, seconds)
+    format("%<min>d:%<sec>02d", min: minutes, sec: seconds)
   end
 
   def to_s
@@ -75,7 +79,7 @@ def demo_enumerable_en_clase
     puts "  #{song[:title]} (#{song[:duration]}s)"
   end
 
-  puts "\n¿Alguna canción de Queen?: #{playlist.any? { |song| song[:artist] == 'Queen' }}"
+  puts "\n¿Alguna canción de Queen?: #{playlist.any? { |song| song[:artist] == "Queen" }}"
   puts "¿Todas > 2 min?: #{playlist.all? { |song| song[:duration] > 120 }}"
   puts "Canción más larga: #{playlist.max_by { |song| song[:duration] }[:title]}"
   puts "Canción más corta: #{playlist.min_by { |song| song[:duration] }[:title]}"
@@ -99,7 +103,7 @@ def demo_enumerable_en_clase
   otra.add_song("Song A", "Artist", 200).add_song("Song B", "Artist", 180)
 
   puts "\n#{playlist} > #{otra}?: #{playlist > otra}"
-  puts "#{[otra, playlist].min}"
+  puts [otra, playlist].min
   puts
 end
 
@@ -117,7 +121,7 @@ class FibonacciSequence
   end
 
   def each
-    return to_enum(:each) { @limit } unless block_given?  # { @limit } es el size hint
+    return to_enum(:each) { @limit } unless block_given? # { @limit } es el size hint
 
     prev = 0
     curr = 1
@@ -174,10 +178,10 @@ def demo_lazy_enumerators
 
   # Pipeline lazy con múltiples transformaciones
   resultado = (1..Float::INFINITY).lazy
-    .select { |num| num.odd? }               # Solo impares
-    .map { |num| num ** 2 }                   # Elevar al cuadrado
-    .select { |num| num.to_s.include?("9") }  # Que contengan el dígito 9
-    .first(5)
+              .select(&:odd?)
+              .map { |num| num**2 }
+              .select { |num| num.to_s.include?("9") }
+              .first(5)
   puts "Impares², con dígito 9: #{resultado.inspect}"
 
   # Lazy es útil para archivos grandes (lectura línea por línea sin cargar todo)
@@ -187,23 +191,35 @@ def demo_lazy_enumerators
 
   # Simular lectura lazy de un archivo
   errores = lineas.lazy
-    .select { |linea| linea.start_with?("error:") }
-    .map { |linea| linea.sub("error: ", "").upcase }
-    .first(2)
+                  .select { |linea| linea.start_with?("error:") }
+                  .map { |linea| linea.sub("error: ", "").upcase }
+                  .first(2)
   puts "Primeros 2 errores: #{errores.inspect}"
 
   # Comparar eager vs lazy
   puts "\nEager vs Lazy — Orden de evaluación:"
   puts "Eager (procesa TODO, luego toma primeros):"
-  [1, 2, 3, 4, 5].select { |num| print "  s(#{num})"; num.even? }
-    .map { |num| print " m(#{num})"; num * 10 }
-    .first(1)
+  eager_selected = [1, 2, 3, 4, 5].select do |num|
+    print "  s(#{num})"
+    num.even?
+  end
+  eager_mapped = eager_selected.map do |num|
+    print " m(#{num})"
+    num * 10
+  end
+  eager_mapped.first(1)
   puts
 
   puts "Lazy (procesa uno a uno hasta tener suficientes):"
-  [1, 2, 3, 4, 5].lazy.select { |num| print "  s(#{num})"; num.even? }
-    .map { |num| print " m(#{num})"; num * 10 }
-    .first(1)
+  lazy_selected = [1, 2, 3, 4, 5].lazy.select do |num|
+    print "  s(#{num})"
+    num.even?
+  end
+  lazy_mapped = lazy_selected.map do |num|
+    print " m(#{num})"
+    num * 10
+  end
+  lazy_mapped.first(1)
   puts
   puts
 end
@@ -220,13 +236,14 @@ def demo_chunk_y_slicing
   temperaturas = [22, 23, 25, 28, 30, 31, 27, 24, 21, 19, 18, 20, 23, 26]
 
   puts "Temperaturas agrupadas por rango:"
-  temperaturas.chunk { |temp|
+  chunks = temperaturas.chunk do |temp|
     case temp
     when 0...20  then :frio
     when 20...28 then :templado
     else              :caliente
     end
-  }.each do |tipo, temps|
+  end
+  chunks.each do |tipo, temps|
     puts "  #{tipo}: #{temps.inspect}"
   end
 
@@ -266,9 +283,9 @@ def demo_zip_flat_map
   puts "=== zip y flat_map ==="
 
   # zip — combina arrays elemento a elemento
-  nombres = ["Ana", "Bob", "Carlos"]
+  nombres = %w[Ana Bob Carlos]
   edades = [28, 35, 42]
-  ciudades = ["Madrid", "Lima", "Bogotá"]
+  ciudades = %w[Madrid Lima Bogotá]
 
   combinados = nombres.zip(edades, ciudades)
   puts "zip básico: #{combinados.inspect}"
@@ -280,20 +297,20 @@ def demo_zip_flat_map
 
   # zip con arrays de diferente tamaño (rellena con nil)
   corto = [1, 2]
-  largo = ["a", "b", "c", "d"]
+  largo = %w[a b c d]
   puts "zip diferente tamaño: #{corto.zip(largo).inspect}"
   # => [[1, "a"], [2, "b"]]  (corto limita)
 
   # flat_map — map + flatten(1) en un solo paso
   # Es más eficiente que .map { }.flatten
   oraciones = ["Hola mundo", "Ruby es genial", "Flat map rocks"]
-  palabras = oraciones.flat_map { |oracion| oracion.split }
+  palabras = oraciones.flat_map(&:split)
   puts "\nflat_map palabras: #{palabras.inspect}"
 
   # flat_map para expandir relaciones 1:N
   equipos = [
-    { equipo: "Alpha", miembros: ["Ana", "Bob"] },
-    { equipo: "Beta", miembros: ["Carlos", "Diana", "Eve"] }
+    { equipo: "Alpha", miembros: %w[Ana Bob] },
+    { equipo: "Beta", miembros: %w[Carlos Diana Eve] }
   ]
 
   todos_miembros = equipos.flat_map { |equ| equ[:miembros] }
@@ -331,15 +348,19 @@ def demo_each_cons_slice
   puts "\nMedia móvil de 3 períodos:"
   precios.each_cons(3).with_index do |ventana, idx|
     media = ventana.sum.to_f / ventana.size
-    puts "  Período #{idx + 1}-#{idx + 3}: #{ventana.inspect} → promedio: #{'%.1f' % media}"
+    puts "  Período #{idx + 1}-#{idx + 3}: #{ventana.inspect} → promedio: #{format("%.1f", media)}"
   end
 
   # Caso práctico: detectar tendencias (subida/bajada)
   puts "\nTendencias entre períodos:"
   precios.each_cons(2) do |prev, curr|
     cambio = curr - prev
-    tendencia = cambio.positive? ? "📈 Subió" : (cambio.negative? ? "📉 Bajó" : "➡️  Igual")
-    puts "  #{prev} → #{curr}: #{tendencia} (#{cambio >= 0 ? '+' : ''}#{cambio})"
+    tendencia = if cambio.positive?
+                  "📈 Subió"
+                else
+                  (cambio.negative? ? "📉 Bajó" : "➡️  Igual")
+                end
+    puts "  #{prev} → #{curr}: #{tendencia} (#{"+" if cambio >= 0}#{cambio})"
   end
 
   # each_slice para procesamiento en lotes (batch processing)
@@ -410,7 +431,7 @@ def demo_group_by_tally
   else
     # Alternativa para versiones anteriores
     resultado = personas.group_by { |per| per[:edad] >= 18 ? "Adulto" : "Menor" }
-      .transform_values(&:size)
+                        .transform_values(&:size)
     puts "\ntally manual por edad: #{resultado}"
   end
   puts
@@ -432,10 +453,10 @@ def demo_filter_map
   # datos.select { |d| d&.match?(/\A\d+\z/) }.map(&:to_i)
 
   # Con filter_map (un paso, más limpio):
-  numeros = datos.filter_map { |val|
+  numeros = datos.filter_map do |val|
     val&.match?(/\A\d+\z/) ? val.to_i : nil
-  }
-  puts "Números extraídos: #{numeros.inspect}"  # => [42, 7, 13, 99]
+  end
+  puts "Números extraídos: #{numeros.inspect}" # => [42, 7, 13, 99]
 
   # Parsear datos con posibles errores
   registros = [
@@ -446,19 +467,19 @@ def demo_filter_map
     "user:diana:22"
   ]
 
-  usuarios = registros.filter_map { |registro|
+  usuarios = registros.filter_map do |registro|
     partes = registro.split(":")
     next nil unless partes.size == 3 && partes[0] == "user" && !partes[2].empty?
 
     { nombre: partes[1], edad: partes[2].to_i }
-  }
+  end
   puts "Usuarios válidos: #{usuarios.inspect}"
 
   # filter_map con índice
   letras = %w[a b c d e f g h]
-  pares_con_indice = letras.each_with_index.filter_map { |letra, idx|
+  pares_con_indice = letras.each_with_index.filter_map do |letra, idx|
     idx.even? ? "#{idx}:#{letra}" : nil
-  }
+  end
   puts "Índices pares: #{pares_con_indice.inspect}"
 
   # Versus compact + map
@@ -496,19 +517,19 @@ def demo_generadores
   puts "Primeros 15 primos: #{primos.take(15).inspect}"
 
   # Generador con estado: secuencia de Collatz
-  def collatz(num)
+  collatz = lambda do |num|
     Enumerator.new do |yielder|
       current = num
       loop do
         yielder.yield current
         break if current == 1
 
-        current = current.even? ? current / 2 : current * 3 + 1
+        current = current.even? ? current / 2 : (current * 3) + 1
       end
     end
   end
 
-  puts "\nCollatz(27): #{collatz(27).to_a.first(10).inspect}... (#{collatz(27).count} pasos)"
+  puts "\nCollatz(27): #{collatz.call(27).to_a.first(10).inspect}... (#{collatz.call(27).count} pasos)"
 
   # Enumerator.produce (Ruby 2.7+) — genera valores sucesivos
   if Enumerator.respond_to?(:produce)
@@ -538,7 +559,7 @@ def demo_patrones_avanzados
   puts "=== Patrones avanzados ==="
 
   # each_with_object — acumular en un objeto mutable
-  frecuencias = %w[ruby python ruby java python ruby go].each_with_object(Hash.new(0)) do |lang, hash|
+  frecuencias = %w[ruby python ruby java python ruby go].each_with_object(Hash.new(0)) do |lang, hash| # rubocop:disable Style/TallyMethod
     hash[lang] += 1
   end
   puts "each_with_object: #{frecuencias.inspect}"
@@ -572,16 +593,16 @@ def demo_patrones_avanzados
 
   # flat_map + lazy para pipelines complejos
   documentos = [
-    { titulo: "Ruby Basics", tags: ["ruby", "programming"] },
-    { titulo: "Web Dev", tags: ["html", "css", "ruby"] },
-    { titulo: "Data Science", tags: ["python", "ml"] }
+    { titulo: "Ruby Basics", tags: %w[ruby programming] },
+    { titulo: "Web Dev", tags: %w[html css ruby] },
+    { titulo: "Data Science", tags: %w[python ml] }
   ]
 
   tags_unicos = documentos.flat_map { |doc| doc[:tags] }.uniq.sort
   puts "\nTags únicos: #{tags_unicos.inspect}"
 
   docs_ruby = documentos.select { |doc| doc[:tags].include?("ruby") }
-    .map { |doc| doc[:titulo] }
+                        .map { |doc| doc[:titulo] }
   puts "Docs con tag 'ruby': #{docs_ruby.inspect}"
 
   # each_slice para crear "páginas"

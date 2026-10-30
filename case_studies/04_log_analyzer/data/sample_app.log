@@ -1,0 +1,13 @@
+2026-03-10 08:00:01 [INFO] api-gateway - Servidor HTTP iniciado en el puerto 8080
+2026-03-10 08:01:15 [INFO] auth-service - Usuario autenticado correctamente
+2026-03-10 08:02:40 [WARN] payment-gateway - Latencia elevada con proveedor externo (850ms)
+2026-03-10 08:03:12 [ERROR] order-worker - Timeout conectando a base de datos primaria
+2026-03-10 08:04:05 [ERROR] order-worker - Timeout conectando a base de datos primaria
+LINEA_CORRUPTA_SIN_MARCA_DE_TIEMPO_NI_FORMATO
+2026-03-11 09:15:00 [DEBUG] auth-service - Verificando permisos de sesión activa
+2026-03-11 09:16:22 [ERROR] auth-service - Token JWT expirado o firma inválida
+2026-03-11 09:17:45 [INFO] order-worker - Pedido procesado exitosamente
+2026-03-11 09:18:30 [ERROR] auth-service - Token JWT expirado o firma inválida
+2026-03-12 10:00:00 [UNKNOWN_LEVEL] api-gateway - Nivel no soportado por el esquema
+2026-03-12 10:05:19 [ERROR] order-worker - Timeout conectando a base de datos primaria
+2026-03-12 10:10:00 [FATAL] payment-gateway - Circuito abierto tras fallos consecutivos

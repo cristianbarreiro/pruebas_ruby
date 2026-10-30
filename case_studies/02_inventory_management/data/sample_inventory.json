@@ -1,0 +1,74 @@
+{
+  "products": [
+    {
+      "sku": "CAB-HDMI-2M",
+      "name": "Cable HDMI 2.1 Ultra High Speed 2m",
+      "category": "conectividad",
+      "price_cents": 1250,
+      "stock": 42,
+      "min_stock": 15
+    },
+    {
+      "sku": "HUB-USBC-7P",
+      "name": "Hub USB-C 7 en 1 con Ethernet",
+      "category": "conectividad",
+      "price_cents": 4500,
+      "stock": 4,
+      "min_stock": 8
+    },
+    {
+      "sku": "KBD-MECH-84",
+      "name": "Teclado Mecánico Compacto 84 Teclas",
+      "category": "perifericos",
+      "price_cents": 8900,
+      "stock": 14,
+      "min_stock": 5
+    },
+    {
+      "sku": "MON-IPS-27",
+      "name": "Monitor IPS 27 Pulgadas QHD",
+      "category": "monitores",
+      "price_cents": 29900,
+      "stock": 3,
+      "min_stock": 5
+    },
+    {
+      "sku": "SSD-NVME-1T",
+      "name": "Unidad SSD NVMe PCIe 4.0 1TB",
+      "category": "almacenamiento",
+      "price_cents": 7800,
+      "stock": 20,
+      "min_stock": 10
+    }
+  ],
+  "movements": [
+    {
+      "sku": "KBD-MECH-84",
+      "type": "in",
+      "quantity": 15,
+      "reason": "Compra inicial a proveedor regional",
+      "timestamp": "2026-01-10T09:00:00Z"
+    },
+    {
+      "sku": "KBD-MECH-84",
+      "type": "out",
+      "quantity": 1,
+      "reason": "Venta mostrador factura #1001",
+      "timestamp": "2026-01-12T14:30:00Z"
+    },
+    {
+      "sku": "HUB-USBC-7P",
+      "type": "in",
+      "quantity": 10,
+      "reason": "Reposición mensual lote A",
+      "timestamp": "2026-01-15T10:15:00Z"
+    },
+    {
+      "sku": "HUB-USBC-7P",
+      "type": "out",
+      "quantity": 6,
+      "reason": "Pedido corporativo oficina norte",
+      "timestamp": "2026-01-18T16:45:00Z"
+    }
+  ]
+}

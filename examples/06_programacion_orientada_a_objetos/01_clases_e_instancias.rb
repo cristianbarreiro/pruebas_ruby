@@ -70,8 +70,8 @@ class Person
     @password = password
   end
 
-  # Método que usa internamente la variable privada
-  def authenticate(attempt)
+  # Método predicado que usa internamente la variable privada
+  def authenticated?(attempt)
     @password == attempt
   end
 end
@@ -79,14 +79,14 @@ end
 person = Person.new("Ana", 30, "secreto123")
 puts "Nombre: #{person.name}"        # Getter funciona
 puts "Edad: #{person.age}"           # Getter funciona
-person.age = 31                       # Setter funciona
+person.age = 31 # Setter funciona
 puts "Edad actualizada: #{person.age}"
 
 # person.name = "Otro"               # ⛔ NoMethodError — attr_reader no genera setter
 # puts person.password                # ⛔ NoMethodError — attr_writer no genera getter
 
-puts "¿Autenticación correcta? #{person.authenticate("secreto123")}"
-puts "¿Autenticación incorrecta? #{person.authenticate("mal")}"
+puts "¿Autenticación correcta? #{person.authenticated?("secreto123")}"
+puts "¿Autenticación incorrecta? #{person.authenticated?("mal")}"
 
 # ─────────────────────────────────────────────────────────────────────
 # 3. Métodos de clase vs métodos de instancia
@@ -95,6 +95,7 @@ puts "\n--- 3. Métodos de clase vs instancia ---"
 
 class Counter
   # Variable de clase: compartida entre todas las instancias
+  # rubocop:disable Style/ClassVars -- se muestra @@ frente a variables de instancia
   @@total_count = 0
 
   def initialize(label)
@@ -117,6 +118,7 @@ class Counter
   def self.total_instances
     @@total_count
   end
+  # rubocop:enable Style/ClassVars
 
   def to_s
     "#{@label}: #{@count}"
@@ -131,7 +133,7 @@ counter_b.increment
 
 puts counter_a                        # => Visitas: 3
 puts counter_b                        # => Errores: 1
-puts "Total instancias creadas: #{Counter.total_instances}"  # => 2
+puts "Total instancias creadas: #{Counter.total_instances}" # => 2
 
 # ─────────────────────────────────────────────────────────────────────
 # 4. Encapsulamiento: public, private, protected
@@ -176,7 +178,7 @@ class BankAccount
     puts "  #{"─" * 35}"
     @transaction_log.each { |entry| puts "  #{entry}" }
     puts "  #{"─" * 35}"
-    puts "  Saldo actual: $#{"%.2f" % @balance}"
+    puts "  Saldo actual: $#{format("%.2f", @balance)}"
   end
 
   # protected: accesible desde instancias de la misma clase (o subclases)
@@ -196,11 +198,11 @@ class BankAccount
   end
 
   def log_transaction(type, amount)
-    @transaction_log << "#{Time.now.strftime("%H:%M:%S")} | #{type}: $#{"%.2f" % amount}"
+    @transaction_log << "#{Time.now.strftime("%H:%M:%S")} | #{type}: $#{format("%.2f", amount)}"
   end
 
   def insufficient_funds_message(amount)
-    "Fondos insuficientes. Saldo: $#{"%.2f" % @balance}, Retiro solicitado: $#{"%.2f" % amount}"
+    "Fondos insuficientes. Saldo: $#{format("%.2f", @balance)}, Retiro solicitado: $#{format("%.2f", amount)}"
   end
 end
 
@@ -211,7 +213,7 @@ class InsufficientFundsError < StandardError; end
 account_a = BankAccount.new("Carlos", 1000)
 account_b = BankAccount.new("María", 500)
 
-account_a.deposit(500).deposit(200)   # Encadenamiento — deposit retorna self
+account_a.deposit(500).deposit(200) # Encadenamiento — deposit retorna self
 account_a.withdraw(100)
 account_a.transfer_to(account_b, 300)
 
@@ -241,8 +243,8 @@ begin
 
   # Con instance_variable_get sí se puede, pero NUNCA lo hagas en producción
   puts "Acceso forzado (antipatrón): #{broken.instance_variable_get(:@value)}"
-rescue NoMethodError => err
-  puts "Error capturado: #{err.message}"
+rescue NoMethodError => e
+  puts "Error capturado: #{e.message}"
 end
 
 # ─────────────────────────────────────────────────────────────────────
@@ -260,7 +262,7 @@ class Buggy
 
   def display_score
     # Esto NO falla, pero produce resultados inesperados
-    "#{@name} tiene #{@score} puntos"  # => "Ana tiene  puntos" (nil se convierte a "")
+    "#{@name} tiene #{@score} puntos" # => "Ana tiene  puntos" (nil se convierte a "")
   end
 
   def double_score
@@ -270,12 +272,12 @@ class Buggy
 end
 
 buggy = Buggy.new("Ana")
-puts buggy.display_score  # No falla, pero el resultado es confuso
+puts buggy.display_score # No falla, pero el resultado es confuso
 
 begin
   buggy.double_score
-rescue NoMethodError => err
-  puts "Error por variable no inicializada: #{err.message}"
+rescue NoMethodError => e
+  puts "Error por variable no inicializada: #{e.message}"
   puts "Lección: siempre inicializa todas las variables de instancia en initialize"
 end
 
@@ -290,7 +292,7 @@ class Coordinate
   def initialize(lat, lon)
     @lat = lat
     @lon = lon
-    freeze  # Hace el objeto inmutable después de inicializar
+    freeze # Hace el objeto inmutable después de inicializar
   end
 
   def to_s
@@ -304,8 +306,8 @@ puts "Coordenada: #{point}"
 begin
   # No se puede modificar un objeto congelado
   point.instance_variable_set(:@lat, 0)
-rescue FrozenError => err
-  puts "Error al modificar objeto congelado: #{err.message}"
+rescue FrozenError => e
+  puts "Error al modificar objeto congelado: #{e.message}"
 end
 
 # ─────────────────────────────────────────────────────────────────────

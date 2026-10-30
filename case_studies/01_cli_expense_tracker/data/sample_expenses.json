@@ -1,0 +1,43 @@
+[
+  {
+    "id": "a1b2c3d4-0001-4000-8000-000000000001",
+    "type": "income",
+    "amount_cents": 185000,
+    "category": "Salario",
+    "description": "Nómina mensual de octubre",
+    "date": "2026-10-01"
+  },
+  {
+    "id": "a1b2c3d4-0002-4000-8000-000000000002",
+    "type": "expense",
+    "amount_cents": 62000,
+    "category": "Vivienda",
+    "description": "Alquiler mensual",
+    "date": "2026-10-03"
+  },
+  {
+    "id": "a1b2c3d4-0003-4000-8000-000000000003",
+    "type": "expense",
+    "amount_cents": 14550,
+    "category": "Alimentación",
+    "description": "Compra semanal supermercado",
+    "date": "2026-10-08"
+  },
+  {
+    "id": "a1b2c3d4-0004-4000-8000-000000000004",
+    "type": "expense",
+    "amount_cents": 4200,
+    "category": "Transporte",
+    "description": "Recarga tarjeta de transporte público",
+    "date": "2026-10-12"
+  },
+  {
+    "id": "a1b2c3d4-0005-4000-8000-000000000005",
+    "type": "income",
+    "amount_cents": 32000,
+    "category": "Freelance",
+    "description": "Consultoría de optimización SQL",
+    "date": "2026-10-18"
+  }
+]
+

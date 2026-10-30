@@ -17,20 +17,20 @@ def demo_literales_y_operadores
 
   # Operador =~ retorna la posición del primer match (o nil)
   posicion = texto =~ /\d+/
-  puts "Posición del primer número: #{posicion}"                    # => 21
-  puts "Después de =~, $~ contiene el MatchData: #{$~[0]}" if $~   # => 1995
+  puts "Posición del primer número: #{posicion}" # => 21
+  puts "Después de =~, Regexp.last_match contiene el MatchData: #{Regexp.last_match[0]}" if Regexp.last_match # => 1995
 
   # Operador match retorna un MatchData (o nil)
   resultado = texto.match(/(\d{4})/)
-  puts "match result: #{resultado[0]}" if resultado  # => 1995
-  puts "Captura 1:    #{resultado[1]}" if resultado   # => 1995
+  puts "match result: #{resultado[0]}" if resultado # => 1995
+  puts "Captura 1:    #{resultado[1]}" if resultado # => 1995
 
   # match? retorna solo true/false (más eficiente, no crea MatchData)
-  puts "¿Contiene números?: #{texto.match?(/\d+/)}"    # => true
+  puts "¿Contiene números?: #{texto.match?(/\d+/)}" # => true
   puts "¿Contiene emoji?:   #{texto.match?(/\p{Emoji}/)}" # => false
 
   # Operador === (útil en case/when)
-  clasificar = ->(txt) {
+  clasificar = lambda { |txt|
     case txt
     when /\A\d+\z/        then "Solo números"
     when /\A[a-zA-Z]+\z/  then "Solo letras"
@@ -56,7 +56,7 @@ def demo_scan_gsub
 
   # scan — encontrar TODAS las coincidencias
   numeros = texto.scan(/\d+/)
-  puts "Números encontrados: #{numeros.inspect}"  # => ["3", "2", "15", "1"]
+  puts "Números encontrados: #{numeros.inspect}" # => ["3", "2", "15", "1"]
 
   # scan con capturas — retorna arrays anidados
   pares = texto.scan(/(\d+)\s+(\w+)/)
@@ -80,7 +80,7 @@ def demo_scan_gsub
   puts "Con hash: #{censored}"
 
   # gsub con backreferences en el string de reemplazo
-  puts "Juan Pérez".gsub(/(\w+)\s+(\w+)/, '\2, \1')  # => "Pérez, Juan"
+  puts "Juan Pérez".gsub(/(\w+)\s+(\w+)/, '\2, \1') # => "Pérez, Juan"
   puts
 end
 
@@ -114,7 +114,7 @@ def demo_capturas
     \s+HTTP/[\d.]+"                 # Versión HTTP
     \s+(?<codigo>\d{3})             # Código de estado
     \s+(?<bytes>\d+)                # Bytes transferidos
-  }x  # Flag x permite comentarios y espacios
+  }x # Flag x permite comentarios y espacios
 
   log_match = log_line.match(patron_log)
   if log_match
@@ -134,7 +134,7 @@ def demo_capturas
   # Agrupan sin crear una captura
   match_nc = "color: rojo".match(/color:\s+(?:rojo|azul|verde)/)
   puts "\nGrupo no capturante match: #{match_nc[0]}"
-  puts "Capturas (vacías): #{match_nc.captures.inspect}"  # => []
+  puts "Capturas (vacías): #{match_nc.captures.inspect}" # => []
   puts
 end
 
@@ -148,7 +148,7 @@ def demo_patrones_comunes
   # 1. Validación básica de email
   # ⚠️ La validación perfecta de email por regex es extremadamente compleja.
   # Este patrón cubre los casos más comunes, no es RFC 5322 completo.
-  patron_email = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+  patron_email = /\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i
 
   emails = ["usuario@ejemplo.com", "nombre.apellido@sub.dominio.co", "invalido@", "@dominio.com", "test@test"]
   puts "Validación de emails:"
@@ -213,21 +213,21 @@ def demo_flags
   texto = "Primera LÍNEA\nSegunda línea\nTERCERA línea"
 
   # /i — case insensitive
-  puts "Case insensitive: #{texto.scan(/línea/i).inspect}"   # => ["LÍNEA", "línea", "línea"]
-  puts "Case sensitive:   #{texto.scan(/línea/).inspect}"     # => ["línea", "línea"]
+  puts "Case insensitive: #{texto.scan(/línea/i).inspect}" # => ["LÍNEA", "línea", "línea"]
+  puts "Case sensitive:   #{texto.scan(/línea/).inspect}" # => ["línea", "línea"]
 
   # /m — multiline (. incluye \n)
   puts "Sin /m: #{texto.match?(/Primera.+TERCERA/)}"   # => false
   puts "Con /m: #{texto.match?(/Primera.+TERCERA/m)}"  # => true
 
   # /x — extended (permite espacios y comentarios)
-  patron_fecha = /
+  patron_fecha = %r{
     (?<anio>\d{4})    # Año con 4 dígitos
-    [-\/]             # Separador (guión o barra)
+    [-/]             # Separador (guión o barra)
     (?<mes>\d{2})     # Mes con 2 dígitos
-    [-\/]             # Separador
+    [-/]             # Separador
     (?<dia>\d{2})     # Día con 2 dígitos
-  /x
+  }x
 
   match = "2025-06-15".match(patron_fecha)
   puts "Regex extendido: #{match[:anio]}/#{match[:mes]}/#{match[:dia]}" if match
@@ -252,9 +252,9 @@ def demo_rendimiento
 
   # ✅ Compilar regex que se usan repetidamente
   # Almacenar en constantes o variables evita recompilar en cada iteración
-  patron_compilado = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+  patron_compilado = /\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i
   emails = Array.new(5) { |idx| "user#{idx}@example.com" }
-  resultados = emails.select { |email| email.match?(patron_compilado) }
+  resultados = emails.grep(patron_compilado)
   puts "  Emails válidos con regex compilado: #{resultados.size}"
 
   # ⚠️ BACKTRACKING CATASTRÓFICO
@@ -331,8 +331,8 @@ def demo_metodos_string
   puts "Ocurrencias de 'la': #{frase.scan(/\bla\b/).size}"
 
   # tr y gsub — diferencia
-  puts "tr('aeiou', '*'):    #{"hello world".tr('aeiou', '*')}"     # => h*ll* w*rld
-  puts "gsub(/[aeiou]/, '*'): #{"hello world".gsub(/[aeiou]/, '*')}" # => h*ll* w*rld
+  puts "tr('aeiou', '*'):    #{"hello world".tr("aeiou", "*")}" # => h*ll* w*rld
+  puts "gsub(/[aeiou]/, '*'): #{"hello world".gsub(/[aeiou]/, "*")}" # => h*ll* w*rld
   puts "tr es más rápido para reemplazos carácter a carácter."
 
   # Freeze de regex (optimización menor, Ruby ya cachea literales)

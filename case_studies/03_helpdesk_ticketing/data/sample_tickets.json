@@ -1,0 +1,89 @@
+{
+  "tickets": [
+    {
+      "id": "TCK-001",
+      "title": "Fallo de autenticación en VPN corporativa",
+      "description": "El cliente VPN rechaza el certificado TLS tras renovar credenciales.",
+      "requester": "elena.morales@ejemplo.local",
+      "priority": "high",
+      "category": "redes",
+      "status": "in_progress",
+      "assignee": "carlos.vega",
+      "created_at": "2026-02-01T08:00:00Z",
+      "resolved_at": null,
+      "history": [
+        {
+          "from": "open",
+          "to": "in_progress",
+          "at": "2026-02-01T08:15:00Z",
+          "note": "Revisión de logs del concentrador VPN iniciada"
+        }
+      ]
+    },
+    {
+      "id": "TCK-002",
+      "title": "Solicitud de licencia para entorno de diseño",
+      "description": "Se requiere activación de suite gráfica para nuevo integrante.",
+      "requester": "marco.silva@ejemplo.local",
+      "priority": "low",
+      "category": "software",
+      "status": "pending",
+      "assignee": "lucia.rojas",
+      "created_at": "2026-02-01T09:30:00Z",
+      "resolved_at": null,
+      "history": [
+        {
+          "from": "open",
+          "to": "in_progress",
+          "at": "2026-02-01T09:45:00Z",
+          "note": "Verificando disponibilidad de licencias flotantes"
+        },
+        {
+          "from": "in_progress",
+          "to": "pending",
+          "at": "2026-02-01T10:10:00Z",
+          "note": "En espera de aprobación del responsable de área"
+        }
+      ]
+    },
+    {
+      "id": "TCK-003",
+      "title": "Error 502 en entorno de preproducción",
+      "description": "El balanceador devuelve 502 Bad Gateway al desplegar la rama actual.",
+      "requester": "sofia.navarro@ejemplo.local",
+      "priority": "critical",
+      "category": "infraestructura",
+      "status": "resolved",
+      "assignee": "carlos.vega",
+      "created_at": "2026-02-01T11:00:00Z",
+      "resolved_at": "2026-02-01T11:30:00Z",
+      "history": [
+        {
+          "from": "open",
+          "to": "in_progress",
+          "at": "2026-02-01T11:05:00Z",
+          "note": "Inspeccionando sockets upstream de Puma"
+        },
+        {
+          "from": "in_progress",
+          "to": "resolved",
+          "at": "2026-02-01T11:30:00Z",
+          "note": "Ajustado timeout de healthcheck y reiniciado servicio"
+        }
+      ]
+    },
+    {
+      "id": "TCK-004",
+      "title": "Impresora de planta 2 sin tóner",
+      "description": "Impresión tenue y aviso de recambio en pantalla.",
+      "requester": "jorge.luna@ejemplo.local",
+      "priority": "medium",
+      "category": "hardware",
+      "status": "open",
+      "assignee": null,
+      "created_at": "2026-02-01T12:00:00Z",
+      "resolved_at": null,
+      "history": []
+    }
+  ]
+}

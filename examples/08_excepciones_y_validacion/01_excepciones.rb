@@ -22,24 +22,22 @@ puts "=" * 80
 puts "\n--- 1. begin/rescue/else/ensure ---"
 
 def divide(dividend, divisor)
-  begin
-    result = dividend / divisor
-  rescue ZeroDivisionError => err
-    # rescue: se ejecuta si ocurre el error especificado
-    puts "  ⚠️ Error capturado: #{err.message}"
-    nil
-  rescue TypeError => err
-    # Puedes capturar diferentes tipos de error
-    puts "  ⚠️ Error de tipo: #{err.message}"
-    nil
-  else
-    # else: se ejecuta SOLO si NO hubo error (a menudo olvidado)
-    puts "  ✅ División exitosa: #{dividend} / #{divisor} = #{result}"
-    result
-  ensure
-    # ensure: se ejecuta SIEMPRE, haya o no error (como finally en otros lenguajes)
-    puts "  [ensure] Operación de división finalizada"
-  end
+  result = dividend / divisor
+rescue ZeroDivisionError => e
+  # rescue: se ejecuta si ocurre el error especificado
+  puts "  ⚠️ Error capturado: #{e.message}"
+  nil
+rescue TypeError => e
+  # Puedes capturar diferentes tipos de error
+  puts "  ⚠️ Error de tipo: #{e.message}"
+  nil
+else
+  # else: se ejecuta SOLO si NO hubo error (a menudo olvidado)
+  puts "  ✅ División exitosa: #{dividend} / #{divisor} = #{result}"
+  result
+ensure
+  # ensure: se ejecuta SIEMPRE, haya o no error (como finally en otros lenguajes)
+  puts "  [ensure] Operación de división finalizada"
 end
 
 divide(10, 2)     # Happy path
@@ -89,13 +87,13 @@ class InsufficientBalanceError < BusinessError
   def initialize(available, requested)
     @available = available
     @requested = requested
-    super("Saldo insuficiente: disponible $#{"%.2f" % available}, solicitado $#{"%.2f" % requested}")
+    super("Saldo insuficiente: disponible $#{format("%.2f", available)}, solicitado $#{format("%.2f", requested)}")
   end
 end
 
 class AccountLockedError < BusinessError
   def initialize(reason = "Cuenta bloqueada por seguridad")
-    super(reason)
+    super
   end
 end
 
@@ -115,7 +113,7 @@ puts "          └── AccountLockedError"
 puts "\n--- 3. Validación de inputs ---"
 
 class UserRegistration
-  EMAIL_PATTERN = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+  EMAIL_PATTERN = /\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i
   MIN_PASSWORD_LENGTH = 8
 
   def register(name: nil, email: nil, password: nil)
@@ -171,8 +169,8 @@ test_cases.each do |test_case|
     email: test_case[:email],
     password: test_case[:password]
   )
-rescue ValidationError => err
-  puts "  ❌ Error esperado (#{test_case[:expected_error]}): #{err.message}"
+rescue ValidationError => e
+  puts "  ❌ Error esperado (#{test_case[:expected_error]}): #{e.message}"
 end
 
 # ─────────────────────────────────────────────────────────────────────
@@ -182,15 +180,15 @@ puts "\n--- 4. Captura por jerarquía ---"
 
 def handle_error(error_instance)
   raise error_instance
-rescue ValidationError => err
+rescue ValidationError => e
   # Captura RequiredFieldError, InvalidFormatError y ValidationError
-  puts "  [Validación] #{err.class}: #{err.message}"
-rescue BusinessError => err
+  puts "  [Validación] #{e.class}: #{e.message}"
+rescue BusinessError => e
   # Captura InsufficientBalanceError y AccountLockedError
-  puts "  [Negocio] #{err.class}: #{err.message}"
-rescue AppError => err
+  puts "  [Negocio] #{e.class}: #{e.message}"
+rescue AppError => e
   # Captura cualquier error de la app no manejado antes
-  puts "  [App] #{err.class}: #{err.message}"
+  puts "  [App] #{e.class}: #{e.message}"
 end
 
 handle_error(RequiredFieldError.new("email"))
@@ -224,8 +222,8 @@ EXPLANATION
 
 # ⚠️ Antipatrón: rescatar Exception o todos los errores
 puts "⚠️ Antipatrón — NUNCA hagas esto:"
-puts '  rescue Exception => e  # Captura CTRL+C, NoMemoryError, SyntaxError...'
-puts '  rescue => e            # Rescata StandardError — aceptable pero usa clases específicas'
+puts "  rescue Exception => e  # Captura CTRL+C, NoMemoryError, SyntaxError..."
+puts "  rescue => e            # Rescata StandardError — aceptable pero usa clases específicas"
 
 # ─────────────────────────────────────────────────────────────────────
 # 6. Manejo seguro de archivos
@@ -237,13 +235,13 @@ def read_config(file_path)
   content = File.read(file_path)
   puts "  ✅ Archivo leído: #{content.length} bytes"
   content
-rescue Errno::ENOENT => err
+rescue Errno::ENOENT => e
   puts "  ❌ Archivo no encontrado: #{file_path}"
-  puts "     Detalle: #{err.message}"
+  puts "     Detalle: #{e.message}"
   nil
-rescue Errno::EACCES => err
+rescue Errno::EACCES => e
   puts "  ❌ Sin permisos para leer: #{file_path}"
-  puts "     Detalle: #{err.message}"
+  puts "     Detalle: #{e.message}"
   nil
 end
 
@@ -258,9 +256,9 @@ def write_safely(file_path, content)
   File.rename(temp_path, file_path)
   puts "  ✅ Archivo escrito: #{file_path}"
   true
-rescue SystemCallError => err
+rescue SystemCallError => e
   # SystemCallError es padre de todos los Errno::*
-  puts "  ❌ Error de sistema al escribir: #{err.message}"
+  puts "  ❌ Error de sistema al escribir: #{e.message}"
   # Limpiar archivo temporal si existe
   File.delete(temp_path) if temp_path && File.exist?(temp_path)
   false
@@ -277,12 +275,12 @@ class PaymentProcessor
   def process_payment(amount, card_number)
     validate_amount!(amount)
     charge_card(card_number, amount)
-    puts "  ✅ Pago de $#{"%.2f" % amount} procesado"
+    puts "  ✅ Pago de $#{format("%.2f", amount)} procesado"
   rescue ValidationError
-    raise  # Re-lanzar sin modificar — el error ya tiene buen contexto
-  rescue StandardError => err
+    raise # Re-lanzar sin modificar — el error ya tiene buen contexto
+  rescue StandardError => e
     # Envolver el error original en uno con más contexto
-    raise BusinessError, "Error al procesar pago de $#{"%.2f" % amount}: #{err.message}"
+    raise BusinessError, "Error al procesar pago de $#{format("%.2f", amount)}: #{e.message}"
   end
 
   private
@@ -295,7 +293,7 @@ class PaymentProcessor
     # Simular un error de red
     raise IOError, "Timeout conectando al procesador de pagos" if card_number == "FAIL"
 
-    puts "  💳 Cargando $#{"%.2f" % amount} a tarjeta ***#{card_number[-4..]}"
+    puts "  💳 Cargando $#{format("%.2f", amount)} a tarjeta ***#{card_number[-4..]}"
   end
 end
 
@@ -307,15 +305,15 @@ payment.process_payment(99.99, "4111111111111234")
 # Sad path: error de validación (se propaga directamente)
 begin
   payment.process_payment(-50, "4111111111111234")
-rescue ValidationError => err
-  puts "  ❌ Validación: #{err.message}"
+rescue ValidationError => e
+  puts "  ❌ Validación: #{e.message}"
 end
 
 # Sad path: error envuelto con contexto adicional
 begin
   payment.process_payment(75, "FAIL")
-rescue BusinessError => err
-  puts "  ❌ Negocio: #{err.message}"
+rescue BusinessError => e
+  puts "  ❌ Negocio: #{e.message}"
 end
 
 # ─────────────────────────────────────────────────────────────────────
@@ -335,10 +333,10 @@ def fetch_with_retry(url, max_retries: 3)
 
     puts "  ✅ Respuesta recibida en intento #{attempts}"
     "datos del servidor"
-  rescue IOError => err
+  rescue IOError => e
     if attempts < max_retries
-      wait_time = 2**attempts * 0.01  # Backoff exponencial (simulado rápido)
-      puts "  ⚠️ #{err.message} — reintentando en #{"%.2f" % wait_time}s..."
+      wait_time = (2**attempts) * 0.01 # Backoff exponencial (simulado rápido)
+      puts "  ⚠️ #{e.message} — reintentando en #{format("%.2f", wait_time)}s..."
       sleep(wait_time)
       retry  # Vuelve al begin
     else
@@ -395,10 +393,10 @@ end
 def assert_raises(error_class, description, &block)
   block.call
   puts "  ❌ FAIL: #{description} — no lanzó #{error_class}"
-rescue error_class => err
-  puts "  ✅ PASS: #{description} — #{err.message}"
-rescue StandardError => err
-  puts "  ❌ FAIL: #{description} — lanzó #{err.class} en vez de #{error_class}"
+rescue error_class => e
+  puts "  ✅ PASS: #{description} — #{e.message}"
+rescue StandardError => e
+  puts "  ❌ FAIL: #{description} — lanzó #{e.class} en vez de #{error_class}"
 end
 
 puts "\nTests del sistema de registro:"

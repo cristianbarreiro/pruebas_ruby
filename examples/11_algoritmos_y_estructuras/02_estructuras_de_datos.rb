@@ -45,7 +45,7 @@ class Stack
   end
 
   def to_s
-    "Stack(#{@elements.inspect}, tope=#{empty? ? 'nil' : @elements.last.inspect})"
+    "Stack(#{@elements.inspect}, tope=#{empty? ? "nil" : @elements.last.inspect})"
   end
 
   def inspect
@@ -110,7 +110,7 @@ class Queue
   end
 
   def to_s
-    "Queue(#{@elements.inspect}, frente=#{empty? ? 'nil' : @elements.first.inspect})"
+    "Queue(#{@elements.inspect}, frente=#{empty? ? "nil" : @elements.first.inspect})"
   end
 
   def inspect
@@ -134,7 +134,7 @@ def demo_procesador_tareas
   puts "Tareas en cola: #{cola.size}"
 
   # Procesar en orden de llegada (FIFO)
-  while !cola.empty?
+  until cola.empty?
     tarea = cola.dequeue
     puts "  Procesando: #{tarea} ✓"
   end
@@ -251,7 +251,7 @@ class LinkedList
   end
 
   def to_s
-    values = map(&:to_s).join(" → ")
+    values = to_a.join(" → ")
     "LinkedList[#{values}]"
   end
 
@@ -275,15 +275,15 @@ def demo_hash_maps
   puts "Inventario: #{inventario}"
 
   # Acceso — O(1) promedio
-  puts "Manzanas: #{inventario['manzanas']}"
+  puts "Manzanas: #{inventario["manzanas"]}"
 
   # Acceso seguro con fetch (lanza error si no existe, o usa default)
-  puts "Peras: #{inventario.fetch('peras', 0)}"
+  puts "Peras: #{inventario.fetch("peras", 0)}"
 
   # Operaciones comunes
   inventario["uvas"] = 25                   # Agregar — O(1)
   inventario.delete("bananas")              # Eliminar — O(1)
-  puts "¿Tiene naranjas?: #{inventario.key?('naranjas')}"  # Verificar — O(1)
+  puts "¿Tiene naranjas?: #{inventario.key?("naranjas")}" # Verificar — O(1)
 
   # Iterar
   puts "Inventario actualizado:"
@@ -303,13 +303,13 @@ def demo_hash_maps
 
   # Default con bloque (cada clave obtiene un objeto independiente)
   agrupado = Hash.new { |hsh, key| hsh[key] = [] }
-  [["fruta", "manzana"], ["verdura", "zanahoria"], ["fruta", "pera"], ["verdura", "brócoli"]].each do |cat, item|
+  [%w[fruta manzana], %w[verdura zanahoria], %w[fruta pera], %w[verdura brócoli]].each do |cat, item|
     agrupado[cat] << item
   end
   puts "\nAgrupado: #{agrupado}"
 
   # ⚠️ Error común: Hash.new([]) comparte el MISMO array entre todas las claves
-  malo = Hash.new([])
+  malo = Hash.new([]) # rubocop:disable Lint/SharedMutableDefault -- demostración del error
   malo[:lista_a] << "item1"
   malo[:lista_b] << "item2"
   puts "\n⚠️  Hash.new([]) comparte arrays: #{malo[:lista_a].inspect}"
@@ -323,23 +323,21 @@ end
 # Set es una colección de valores únicos, sin orden garantizado.
 # Internamente usa un Hash, por lo que las operaciones son O(1) promedio.
 
-require "set"
-
 def demo_sets
   puts "=== Sets (Conjuntos) ==="
 
   # Creación
-  frutas = Set.new(["manzana", "banana", "naranja", "manzana"])  # Duplicados eliminados
+  frutas = Set.new(%w[manzana banana naranja]) # Duplicados eliminados
   puts "Set de frutas: #{frutas.inspect}"
-  puts "Tamaño: #{frutas.size}"  # => 3 (manzana aparece solo una vez)
+  puts "Tamaño: #{frutas.size}" # => 3 (manzana aparece solo una vez)
 
   # Operaciones básicas — O(1) promedio
   frutas.add("uva")
   frutas.delete("banana")
-  puts "¿Tiene manzana?: #{frutas.include?('manzana')}"
+  puts "¿Tiene manzana?: #{frutas.include?("manzana")}"
 
   # Operaciones de conjuntos
-  tropicales = Set.new(["mango", "papaya", "banana", "naranja"])
+  tropicales = Set.new(%w[mango papaya banana naranja])
 
   puts "\nFrutas: #{frutas.inspect}"
   puts "Tropicales: #{tropicales.inspect}"
@@ -349,9 +347,9 @@ def demo_sets
   puts "Diferencia simétrica (^): #{(frutas ^ tropicales).inspect}"
 
   # Subconjuntos y superconjuntos
-  pequeño = Set.new(["manzana", "naranja"])
-  puts "\n#{pequeño.inspect} ⊂ #{frutas.inspect}?: #{pequeño.subset?(frutas)}"
-  puts "#{frutas.inspect} ⊃ #{pequeño.inspect}?: #{frutas.superset?(pequeño)}"
+  pequeno = Set.new(%w[manzana naranja])
+  puts "\n#{pequeno.inspect} ⊂ #{frutas.inspect}?: #{pequeno.subset?(frutas)}"
+  puts "#{frutas.inspect} ⊃ #{pequeno.inspect}?: #{frutas.superset?(pequeno)}"
   puts
 end
 
@@ -451,7 +449,7 @@ def demo_agrupamiento_transformacion
     puts "    Cantidad: #{info[:cantidad]}"
     puts "    Total:    $#{info[:total]}"
     puts "    Promedio: $#{info[:promedio]}"
-    puts "    Items:    #{info[:productos].join(', ')}"
+    puts "    Items:    #{info[:productos].join(", ")}"
   end
 
   # Top N productos más caros
@@ -461,12 +459,12 @@ def demo_agrupamiento_transformacion
 
   # Pivote: categoría × mes
   puts "\nTabla pivote (categoría × mes):"
-  puts "  #{'Categoría'.ljust(15)} | #{'2025-01'.rjust(10)} | #{'2025-02'.rjust(10)}"
-  puts "  #{'-' * 15}-+-#{'-' * 10}-+-#{'-' * 10}"
+  puts "  #{"Categoría".ljust(15)} | #{"2025-01".rjust(10)} | #{"2025-02".rjust(10)}"
+  puts "  #{"-" * 15}-+-#{"-" * 10}-+-#{"-" * 10}"
   por_categoria.each do |cat, items|
-    mes_01 = items.select { |item| item[:fecha] == "2025-01" }.sum { |item| item[:precio] }
-    mes_02 = items.select { |item| item[:fecha] == "2025-02" }.sum { |item| item[:precio] }
-    puts "  #{cat.ljust(15)} | $#{mes_01.to_s.rjust(9)} | $#{mes_02.to_s.rjust(9)}"
+    mes_enero = items.select { |item| item[:fecha] == "2025-01" }.sum { |item| item[:precio] }
+    mes_febrero = items.select { |item| item[:fecha] == "2025-02" }.sum { |item| item[:precio] }
+    puts "  #{cat.ljust(15)} | $#{mes_enero.to_s.rjust(9)} | $#{mes_febrero.to_s.rjust(9)}"
   end
   puts
 end
@@ -479,7 +477,7 @@ def ejecutar_pruebas_estructuras
   puts "=== Pruebas de estructuras de datos ==="
   errores = []
 
-  verificar = ->(nombre, actual, esperado) {
+  verificar = lambda { |nombre, actual, esperado|
     if actual == esperado
       puts "  ✓ #{nombre}"
     else
@@ -579,7 +577,7 @@ def ejecutar_pruebas_estructuras
   verificar.call("sum", lista_enum.sum, 14)
 
   # --- Resumen ---
-  puts "\n#{'=' * 40}"
+  puts "\n#{"=" * 40}"
   if errores.empty?
     puts "✅ Todas las pruebas pasaron."
   else

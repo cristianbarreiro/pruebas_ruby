@@ -14,6 +14,7 @@ AllCops:
     - "**/vendor/**/*"
     - "**/tmp/**/*"
     - "**/storage/**/*"
+    - ".ruby-lsp/**/*"
 
 # En Windows con git autocrlf, los archivos tienen CRLF al checkout; no aporta
 # valor pedagógico forzar LF y genera ruido en cada ejecución local.
@@ -33,6 +34,12 @@ Style/StringLiteralsInInterpolation:
 Style/Documentation:
   Enabled: false
 
+# Cada archivo en examples/ es una lección autocontenida y ejecutable que
+# agrupa varias clases pequeñas para comparar diseños sin saltar de archivo.
+Style/OneClassPerFile:
+  Exclude:
+    - "examples/**/*"
+
 Layout/LineLength:
   Max: 120
 
@@ -49,23 +56,34 @@ Metrics/AbcSize:
   Exclude:
     - "examples/**/*"
 
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - "examples/**/*"
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - "examples/**/*"
+
 # Las pruebas y la definición de tareas se organizan en bloques largos por naturaleza.
 Metrics/BlockLength:
   Exclude:
     - "Rakefile"
     - "**/Rakefile"
     - "**/test/**/*"
+    - "examples/**/*"
     - "**/*.gemspec"
 
 Metrics/ClassLength:
   Max: 150
   Exclude:
     - "**/test/**/*"
+    - "examples/**/*"
 
-# El ejecutable sigue la convención de nombres de comandos de terminal (guiones).
+# Los ejecutables de terminal siguen la convención POSIX con guiones.
 Naming/FileName:
   Exclude:
-    - "bin/ruby-lab"
+    - "bin/*"
+    - "case_studies/*/bin/*"
 
 # Las pruebas de dominio suelen verificar varias propiedades del mismo resultado.
 Minitest/MultipleAssertions:

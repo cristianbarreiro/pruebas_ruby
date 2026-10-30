@@ -20,6 +20,7 @@ case_studies/*/reports/
 !.env.example
 
 # Editores y sistema operativo
+.ruby-lsp/
 .idea/
 .vscode/
 *.swp

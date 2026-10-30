@@ -44,12 +44,12 @@ end
 rex = Perro.new(nombre: "Rex")
 
 # is_a? / kind_of? - Verificar tipo (incluye herencia)
-puts "  rex.is_a?(Perro):  #{rex.is_a?(Perro)}"    # true
+puts "  rex.is_a?(Perro):  #{rex.is_a?(Perro)}" # true
 puts "  rex.is_a?(Animal): #{rex.is_a?(Animal)}"    # true
 puts "  rex.is_a?(String): #{rex.is_a?(String)}"    # false
 
 # class e instance_of? - Clase exacta (sin herencia)
-puts "  rex.class:                    #{rex.class}"                    # Perro
+puts "  rex.class:                    #{rex.class}" # Perro
 puts "  rex.instance_of?(Perro):      #{rex.instance_of?(Perro)}"     # true
 puts "  rex.instance_of?(Animal):     #{rex.instance_of?(Animal)}"    # false
 
@@ -95,16 +95,16 @@ puts "  calc.send(:secreto): #{calc.send(:secreto)}"
 
 # public_send respeta la visibilidad (✅  más seguro)
 begin
-  calc.public_send(:secreto)
-rescue NoMethodError => err
-  puts "  calc.public_send(:secreto) → Error: #{err.message}"
+  calc.public_send(:secreto) # rubocop:disable Style/SendWithLiteralMethodName -- demostración de public_send
+rescue NoMethodError => e
+  puts "  calc.public_send(:secreto) → Error: #{e.message}"
 end
 
 # Caso práctico: dispatch dinámico
 operaciones = { sumar: [10, 20] }
 operaciones.each do |operacion, args|
   resultado = calc.public_send(operacion, *args)
-  puts "  #{operacion}(#{args.join(', ')}) = #{resultado}"
+  puts "  #{operacion}(#{args.join(", ")}) = #{resultado}"
 end
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -205,8 +205,8 @@ puts "  flexible.method(:nombre):  #{metodo_nombre.call}"
 # Sin respond_to_missing?, esto fallaría:
 begin
   flexible.metodo_que_no_existe
-rescue NoMethodError => err
-  puts "  NoMethodError esperado: #{err.message.split("\n").first}"
+rescue NoMethodError => e
+  puts "  NoMethodError esperado: #{e.message.split("\n").first}"
 end
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -274,11 +274,11 @@ puts "  Vehiculo.tipo:    #{Vehiculo.tipo}"
 # module_eval es alias de class_eval (funciona igual)
 String.class_eval do
   def gritar
-    upcase + "!!!"
+    "#{upcase}!!!"
   end
 end
 
-puts '  "hola".gritar: ' + "hola".gritar
+puts "  \"hola\".gritar: #{"hola".gritar}"
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 7. instance_eval - Evaluar en contexto de una instancia
@@ -359,9 +359,9 @@ class FormBuilder
     @campos = []
   end
 
-  def self.build(&bloque)
+  def self.build(&)
     builder = new
-    builder.instance_eval(&bloque)
+    builder.instance_eval(&)
     builder
   end
 
@@ -406,6 +406,7 @@ module StringExtensions
 
     def truncar(longitud:, sufijo: "...")
       return self if length <= longitud
+
       self[0...(longitud - sufijo.length)] + sufijo
     end
   end
@@ -421,9 +422,9 @@ end
 # Con "using", los métodos están disponibles solo en este scope
 using StringExtensions
 
-puts '  "anilina".palindromo?: ' + "anilina".palindromo?.to_s
-puts '  "hola".palindromo?: ' + "hola".palindromo?.to_s
-puts '  "texto largo...".truncar(longitud: 10): ' + "texto largo de ejemplo".truncar(longitud: 10)
+puts "  \"anilina\".palindromo?: #{"anilina".palindromo?}"
+puts "  \"hola\".palindromo?: #{"hola".palindromo?}"
+puts "  \"texto largo...\".truncar(longitud: 10): #{"texto largo de ejemplo".truncar(longitud: 10)}"
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 11. Comparación: Formas de extender clases

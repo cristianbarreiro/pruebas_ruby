@@ -38,7 +38,7 @@ module Payments
     end
 
     def to_s
-      "Factura: #{@description} — $#{"%.2f" % @amount} + IVA = $#{"%.2f" % total}"
+      "Factura: #{@description} — $#{format("%.2f", @amount)} + IVA = $#{format("%.2f", total)}"
     end
   end
 
@@ -48,7 +48,7 @@ module Payments
     end
 
     def to_s
-      "Recibo de pago: #{@invoice.description} — $#{"%.2f" % @invoice.total}"
+      "Recibo de pago: #{@invoice.description} — $#{format("%.2f", @invoice.total)}"
     end
   end
 end
@@ -150,7 +150,7 @@ module ClassInfo
 end
 
 class Product
-  extend ClassInfo  # Los métodos se agregan a la clase, no a las instancias
+  extend ClassInfo # Los métodos se agregan a la clase, no a las instancias
 
   attr_reader :title, :price
 
@@ -160,7 +160,7 @@ class Product
   end
 end
 
-puts Product.describe_class   # Método de clase
+puts Product.describe_class # Método de clase
 puts "Versión: #{Product.class_version}"
 # product = Product.new("Laptop", 999)
 # product.describe_class  # ⛔ NoMethodError — es método de clase, no de instancia
@@ -187,7 +187,7 @@ module Timing
     start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     result = super  # Llama al siguiente en la cadena (Logging#process o la clase)
     elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
-    puts "  [TIME] Tardó #{"%.6f" % elapsed}s"
+    puts "  [TIME] Tardó #{format("%.6f", elapsed)}s"
     result
   end
 end
@@ -254,7 +254,7 @@ puts "#{temp_a} == #{temp_c}? #{temp_a == temp_c}"   # true (100°C == 373.15K)
 puts "#{temp_d} < #{temp_a}? #{temp_d < temp_a}"     # true
 
 temps = [temp_a, temp_d, Temperature.new(50, :celsius)]
-puts "Ordenadas: #{temps.sort.map(&:to_s).join(", ")}"
+puts "Ordenadas: #{temps.sort.join(", ")}"
 puts "Máxima: #{temps.max}"
 puts "Mínima: #{temps.min}"
 
@@ -315,8 +315,8 @@ class TaskList
   end
 
   # Implementar each para obtener todos los métodos de Enumerable
-  def each(&block)
-    @tasks.each(&block)
+  def each(&)
+    @tasks.each(&)
   end
 
   def pending
@@ -398,7 +398,7 @@ Child.ancestors.each_with_index do |ancestor, idx|
 end
 
 child = Child.new
-puts "\nchild.who_am_i → #{child.who_am_i}"  # => "ModC (prepended)"
+puts "\nchild.who_am_i → #{child.who_am_i}" # => "ModC (prepended)"
 puts "  (ModC gana porque fue prepended)"
 
 # ─────────────────────────────────────────────────────────────────────
@@ -456,8 +456,8 @@ class BookCollection
     self
   end
 
-  def each(&block)
-    @books.each(&block)
+  def each(&)
+    @books.each(&)
   end
 
   private

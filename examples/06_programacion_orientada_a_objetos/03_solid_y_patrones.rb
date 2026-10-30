@@ -32,7 +32,7 @@ class BadOrderProcessor
     # Si cambias la persistencia, tocas esta clase.
     total = items.sum { |item| item[:price] * item[:quantity] }
     total *= 0.9 if total > 100
-    puts "  [BAD] Procesando orden: $#{"%.2f" % total}, email a #{email}"
+    puts "  [BAD] Procesando orden: $#{format("%.2f", total)}, email a #{email}"
   end
 end
 
@@ -55,7 +55,7 @@ end
 
 class OrderNotifier
   def notify(email, total)
-    puts "  [GOOD] Email a #{email}: Tu orden por $#{"%.2f" % total} fue procesada"
+    puts "  [GOOD] Email a #{email}: Tu orden por $#{format("%.2f", total)} fue procesada"
   end
 end
 
@@ -96,7 +96,7 @@ class BadExporter
     case format
     when :json then puts "  [BAD] JSON: #{data}"
     when :csv  then puts "  [BAD] CSV: #{data.join(",")}"
-    # Para agregar XML, hay que modificar este método ⚠️
+      # Para agregar XML, hay que modificar este método ⚠️
     end
   end
 end
@@ -124,7 +124,7 @@ end
 # No modificamos código existente.
 class DataExporter
   def initialize(formatter)
-    @formatter = formatter  # Duck typing: solo necesita #export
+    @formatter = formatter # Duck typing: solo necesita #export
   end
 
   def export(data)
@@ -157,7 +157,7 @@ end
 
 class Penguin < Bird
   def move
-    "Caminando sobre el hielo 🐧"  # ✅ Cumple LSP: se puede sustituir sin romper nada
+    "Caminando sobre el hielo 🐧" # ✅ Cumple LSP: se puede sustituir sin romper nada
   end
 end
 
@@ -246,7 +246,7 @@ puts "\n--- 5. DIP: Inversión de Dependencias ---"
 # ⚠️ ANTES: acoplado a una implementación concreta
 class BadLogger
   def log(msg)
-    File.write("app.log", "#{msg}\n", mode: "a")  # Siempre escribe a archivo
+    File.write("app.log", "#{msg}\n", mode: "a") # Siempre escribe a archivo
   end
 end
 
@@ -265,7 +265,7 @@ end
 
 class AppLogger
   def initialize(output: ConsoleOutput.new)
-    @output = output  # Dependencia inyectada (duck typing: solo necesita #write)
+    @output = output # Dependencia inyectada (duck typing: solo necesita #write)
   end
 
   def info(msg)
@@ -282,7 +282,7 @@ logger.info("Aplicación iniciada")
 logger.error("Algo salió mal")
 
 silent_logger = AppLogger.new(output: NullOutput.new)
-silent_logger.info("Esto no se muestra")  # Silencioso — perfecto para tests
+silent_logger.info("Esto no se muestra") # Silencioso — perfecto para tests
 
 # ─────────────────────────────────────────────────────────────────────
 # 6. Patrón Strategy
@@ -322,8 +322,8 @@ puts "  Por largo (desc): #{Sorter.new(ReverseLengthSort.new).sort(words).inspec
 
 # ✅ Strategy con bloques — más idiomático en Ruby
 puts "\n  Strategy con bloques (más Ruby):"
-puts "  #{words.sort_by { |word| word.length }.inspect}"
-puts "  #{words.sort_by { |word| word.reverse }.inspect}"
+puts "  #{words.sort_by(&:length).inspect}"
+puts "  #{words.sort_by(&:reverse).inspect}"
 
 puts "\n  💡 No siempre necesitas una clase Strategy."
 puts "     En Ruby, un bloque o lambda suele ser suficiente."
@@ -372,8 +372,8 @@ end
 
 begin
   ConnectionFactory.create(:staging)
-rescue ArgumentError => err
-  puts "  Error esperado: #{err.message}"
+rescue ArgumentError => e
+  puts "  Error esperado: #{e.message}"
 end
 
 puts "\n  💡 Factory es útil cuando la creación es compleja o condicional."
@@ -454,9 +454,9 @@ puts "  Total usuarios: #{repo.count}"
 puts "  Buscar por ID 1: #{service.find(1)}"
 
 begin
-  service.register("Otro", "ana@mail.com")  # Email duplicado
-rescue RuntimeError => err
-  puts "  Error esperado: #{err.message}"
+  service.register("Otro", "ana@mail.com") # Email duplicado
+rescue RuntimeError => e
+  puts "  Error esperado: #{e.message}"
 end
 
 # ─────────────────────────────────────────────────────────────────────

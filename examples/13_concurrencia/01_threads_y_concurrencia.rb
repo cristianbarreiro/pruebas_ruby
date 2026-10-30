@@ -182,7 +182,7 @@ cola = Thread::Queue.new
 productor = Thread.new do
   5.times do |idx|
     item = "item_#{idx}"
-    cola << item  # push (alias de <<, push, enq)
+    cola << item # push (alias de <<, push, enq)
     puts "  [Productor] Generado: #{item}"
     sleep(0.02)
   end
@@ -263,8 +263,8 @@ end
 
 begin
   hilo_error.join # La excepción se relanza aquí
-rescue RuntimeError => err
-  puts "  Excepción capturada del hilo: #{err.message}"
+rescue RuntimeError => e
+  puts "  Excepción capturada del hilo: #{e.message}"
 end
 
 # Thread.abort_on_exception = true haría que cualquier excepción en un hilo
@@ -386,8 +386,8 @@ begin
 
   puts "  Resultado del Ractor: #{ractor.take}"
   puts "  ✅ Ractors disponibles en esta versión de Ruby"
-rescue => err
-  puts "  ⚠️  Ractors no disponibles o experimentales: #{err.message}"
+rescue StandardError => e
+  puts "  ⚠️  Ractors no disponibles o experimentales: #{e.message}"
 end
 
 # ──────────────────────────────────────────────────────────────────────────────

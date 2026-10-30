@@ -1,17 +1,16 @@
 # frozen_string_literal: true
 
+require "fileutils"
 require "json"
 require "tempfile"
 
 module ExpenseTracker
-  # Persiste transacciones en un archivo JSON.
+  # Persiste transacciones en un archivo JSON local.
   #
   # Decisiones de diseño:
-  # - Escritura atómica (tempfile + rename) para no perder datos si el proceso
-  #   se interrumpe a mitad de escritura.
-  # - La ruta del archivo se inyecta: las pruebas usan un directorio temporal.
-  # - No se pretende ofrecer concurrencia segura entre procesos: para eso se
-  #   necesitaría una base de datos real.
+  # - Escritura atómica (archivo temporal en el mismo directorio + rename)
+  #   para evitar archivos truncados si el proceso se interrumpe.
+  # - La ruta se inyecta por constructor para aislar pruebas con Dir.mktmpdir.
   class JsonStore
     attr_reader :path
 
@@ -22,23 +21,24 @@ module ExpenseTracker
     def load_all
       return [] unless File.exist?(path)
 
-      data = File.read(path)
-      return [] if data.strip.empty?
+      raw = File.read(path, encoding: "UTF-8")
+      return [] if raw.strip.empty?
 
-      JSON.parse(data).map { |hash| Transaction.from_hash(hash) }
-    rescue JSON::ParserError => err
-      raise DataCorruptError, "El archivo #{path} no es JSON válido: #{err.message}"
+      parsed = JSON.parse(raw)
+      raise DataCorruptError, "Se esperaba un array JSON en #{path}" unless parsed.is_a?(Array)
+
+      parsed.map { |entry| Transaction.from_hash(entry) }
+    rescue JSON::ParserError, ArgumentError, TypeError => e
+      raise DataCorruptError, "El archivo #{path} contiene datos corruptos: #{e.message}"
     end
 
     def save_all(transactions)
       dir = File.dirname(path)
       FileUtils.mkdir_p(dir)
+      payload = JSON.pretty_generate(transactions.map(&:to_hash))
 
-      json = JSON.pretty_generate(transactions.map(&:to_hash))
-
-      # Escritura atómica: escribe en un temporal y renombra.
-      Tempfile.create(["expense_tracker", ".json"], dir) do |tmp|
-        tmp.write(json)
+      Tempfile.create(["expenses", ".tmp"], dir) do |tmp|
+        tmp.write(payload)
         tmp.flush
         tmp.close
         FileUtils.mv(tmp.path, path)
@@ -46,22 +46,21 @@ module ExpenseTracker
     end
 
     def append(transaction)
-      all = load_all
-      all << transaction
-      save_all(all)
+      transactions = load_all
+      transactions << transaction
+      save_all(transactions)
       transaction
     end
 
     def delete(transaction_id)
-      all = load_all
-      removed = all.reject { |txn| txn.id == transaction_id }
-      raise NotFoundError, "Transacción #{transaction_id} no encontrada" if removed.size == all.size
+      transactions = load_all
+      remaining = transactions.reject { |txn| txn.id == transaction_id || txn.id.start_with?(transaction_id) }
+      raise NotFoundError, "Transacción #{transaction_id} no encontrada" if remaining.size == transactions.size
 
-      save_all(removed)
+      save_all(remaining)
     end
   end
 
   class DataCorruptError < StandardError; end
   class NotFoundError < StandardError; end
 end
-

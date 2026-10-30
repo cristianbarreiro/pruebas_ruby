@@ -81,7 +81,7 @@ TEXTO
 # Ejemplo ejecutable: información del entorno actual
 puts "  Información del entorno actual:"
 puts "    GEM_HOME: #{Gem.dir}"
-puts "    GEM_PATH: #{Gem.path.join(', ')}"
+puts "    GEM_PATH: #{Gem.path.join(", ")}"
 puts "    Ruby version: #{RUBY_VERSION}"
 puts "    RubyGems version: #{Gem::VERSION}"
 puts "    Plataforma: #{Gem::Platform.local}"
@@ -122,7 +122,7 @@ version_b = Gem::Version.new("3.10.0")
 puts "  Comparación de versiones:"
 puts "    3.2.1 < 3.10.0: #{version_a < version_b}"
 puts "    (SemVer compara numéricamente, no como strings)"
-puts '    "3.2.1" < "3.10.0" como string: #{"3.2.1" < "3.10.0"} (¡incorrecto!)'
+puts "    \"3.2.1\" < \"3.10.0\" como string: #{"3.2.1" < "3.10.0"} (¡incorrecto!)"
 
 # Verificar si una versión satisface un requisito
 requisito = Gem::Requirement.new("~> 3.2")
@@ -463,7 +463,7 @@ begin
   puts "  Detalle de Bundler:"
   puts "    Versión:  #{bundler_spec.version}"
   puts "    Ruta:     #{bundler_spec.gem_dir}"
-  puts "    Autores:  #{bundler_spec.authors.join(', ')}"
+  puts "    Autores:  #{bundler_spec.authors.join(", ")}"
 rescue Gem::MissingSpecError
   puts "  Bundler no encontrado en las gemas instaladas"
 end
